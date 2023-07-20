@@ -1,7 +1,11 @@
 mod test_show_image;
+mod test_image;
+
 fn main() {
     let image_path =
-        r#"D:\DATA\BaiduSyncdisk\project\personal\test_repo\test_rust\images\16.bmp"#;
+        // r#"D:\DATA\BaiduSyncdisk\project\personal\test_repo\test_rust\images\16.bmp"#;
+        // r#"D:\DATA\BaiduSyncdisk\project\personal\test_repo\test_rust\images\xly.png"#;
+        r#"D:\DATA\BaiduSyncdisk\project\personal\test_repo\test_rust\images\nothing_is_impossible.jpg"#;
         // r#"D:\DATA\BaiduSyncdisk\project\personal\test_repo\test_rust\myimage_gray.png"#;
     test_show_image::test_show_image(image_path);
     // // test_minist::test_minist();

@@ -34,4 +34,5 @@ winapi = { version = "0.3.9", features = ["winuser","libloaderapi","shellapi","w
 # mnist = {version = "0.5.0",features = ["download"]}
 ndarray = "*"
 anyhow       = "1"
+screenshots = "0.6.0"
 show-image = "0.13.1"
