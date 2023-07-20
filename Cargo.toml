@@ -24,7 +24,6 @@ features = [
     "Win32_UI_WindowsAndMessaging",
 ]
 [dependencies]
-image = "0.24.6"
 opencv = "0.82.1"
 pyo3 = "0.19.0"
 winapi = { version = "0.3.9", features = ["winuser","libloaderapi","shellapi","winerror","dwmapi","shellscalingapi"] }
@@ -34,5 +33,7 @@ winapi = { version = "0.3.9", features = ["winuser","libloaderapi","shellapi","w
 # mnist = {version = "0.5.0",features = ["download"]}
 ndarray = "*"
 anyhow       = "1"
-screenshots = "0.6.0"
+
+image = "0.24.6"
 show-image = "0.13.1"
+screenshots = "0.6.0"

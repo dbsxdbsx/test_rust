@@ -1,10 +1,9 @@
 use image::GenericImageView;
 use pyo3::pyfunction;
 use show_image::{create_window, event, ImageInfo, ImageView};
-use std::io::Cursor;
 use std::path::{Path, PathBuf};
 
-use crate::test_image::capture_screen;
+use crate::test_image::{capture_screen, Image};
 
 // #[show_image::main]
 #[pyfunction]
@@ -15,18 +14,15 @@ pub fn test_show_image(image_path: &str) {
 
 fn user_main(image_path: impl AsRef<Path>) -> Result<(), Box<dyn std::error::Error>> {
     // way1: 从文件中读取图像
-    // let img = image::open(image_path)?;
-    // let img_dimensions = img.dimensions();
-    // let img = img.into_rgb8();
-    // let img = ImageView::new(ImageInfo::rgb8(img_dimensions.0, img_dimensions.1), &img);
+    let img = Image::from_path(image_path);
 
     // way2: 截屏作图像
-    let screen_shot = capture_screen(0, 0, 1920, 1080);
-    let mut cursor = Cursor::new(screen_shot);
-    let img = image::load(&mut cursor, image::ImageFormat::Png).unwrap();
-    let img_dims = img.dimensions();
-    let img = img.into_rgb8();
-    let img = ImageView::new(ImageInfo::rgb8(img_dims.0, img_dims.1), &img);
+    // let img = Image::from_screen(0, 0, 1920, 1080);
+
+    // 加载到`ImageView`中
+    let img_dims = img.get_dims();
+    let img_buff = img.get_buffer();
+    let img = ImageView::new(ImageInfo::rgb8(img_dims.0, img_dims.1), &img_buff);
 
     // 使用默认选项创建窗口并显示图像
     let mut window_options = show_image::WindowOptions::default();
