@@ -25,14 +25,15 @@ impl Tensor {
     pub fn scalar(value: f32) -> Self {
         Tensor {
             data: na::DMatrix::from_element(1, 1, value),
-            shape: Vec::new(),
+            shape: vec![1, 1],
         }
     }
 
-    pub fn eye(size: usize) -> Self {
-        Tensor {
-            data: na::DMatrix::identity(size, size),
-            shape: vec![size, size],
+    pub fn to_scalar(&self) -> Option<f32> {
+        if self.shape == [1, 1] {
+            Some(self.data[(0, 0)])
+        } else {
+            None
         }
     }
 
@@ -42,6 +43,13 @@ impl Tensor {
         Tensor {
             data: na::DMatrix::from_fn(rows, cols, |_, _| uniform.sample(&mut rng)),
             shape: vec![rows, cols],
+        }
+    }
+
+    pub fn eye(size: usize) -> Self {
+        Tensor {
+            data: na::DMatrix::identity(size, size),
+            shape: vec![size, size],
         }
     }
 }

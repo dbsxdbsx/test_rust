@@ -31,6 +31,19 @@ mod tests {
     }
 
     #[test]
+    fn test_scalar() {
+        let value: f32 = 42.0;
+        let scalar_tensor = Tensor::scalar(value);
+        let data = scalar_tensor.data();
+        assert_eq!(scalar_tensor.shape(), &[1, 1]);
+        assert_eq!(data.index((0, 0)), &value);
+
+        // 再检查下to_scalar()方法
+        let ret_value = scalar_tensor.to_scalar().unwrap();
+        assert!(ret_value - value < 1e-6);
+    }
+
+    #[test]
     fn test_random() {
         let tensor = Tensor::random(2, 3, 0.0, 1.0);
         assert_eq!(tensor.shape(), &[2, 3]);
