@@ -16,7 +16,7 @@ impl Tensor {
         &self.shape
     }
 
-    pub fn empty(rows: usize, cols: usize) -> Self {
+    pub fn zero(rows: usize, cols: usize) -> Self {
         Tensor {
             data: na::DMatrix::zeros(rows, cols),
             shape: vec![rows, cols],

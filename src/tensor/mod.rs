@@ -9,21 +9,21 @@ mod tests {
     #[test]
     fn test_empty() {
         // 测试创建一个2x3的空Tensor，数据全部为 0.0
-        let tensor = Tensor::empty(2, 3);
+        let tensor = Tensor::zero(2, 3);
         assert_eq!(
             tensor.data(),
             &na::DMatrix::from_row_slice(2, 3, &[0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         );
 
         // 测试创建一个1x3的空Tensor，数据全部为 0.0
-        let tensor = Tensor::empty(1, 3);
+        let tensor = Tensor::zero(1, 3);
         assert_eq!(
             tensor.data(),
             &na::DMatrix::from_row_slice(1, 3, &[0.0, 0.0, 0.0])
         );
 
         // 测试创建一个2x1的空Tensor，数据全部为 0.0
-        let tensor = Tensor::empty(2, 1);
+        let tensor = Tensor::zero(2, 1);
         assert_eq!(
             tensor.data(),
             &na::DMatrix::from_row_slice(2, 1, &[0.0, 0.0])
@@ -71,7 +71,6 @@ mod tests {
 
         let result1 = tensor1.clone() * scalar;
         let result2 = scalar * tensor1.clone();
-        // let result3 = tensor1.clone() * tensor2.clone();
         let result3 = tensor1.clone() * tensor2.clone();
         // let result4 = tensor2 * tensor1.clone();
         println!("======================");
