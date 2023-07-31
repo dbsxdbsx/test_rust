@@ -1,9 +1,10 @@
 use nalgebra as na;
 use rand::distributions::{Distribution, Uniform};
 
+#[derive(Debug, Clone)]
 pub struct Tensor {
     data: na::DMatrix<f32>,
-    shape: Vec<usize>, // 用于存储Tensor的形状, 例如[]表示标量；[1]表示含还有1个元素的行向量；[2, 3]表示2行3列
+    shape: Vec<usize>, // 用于存储Tensor的形状。其至少有2个元素，代表行与列，[1，1]表示含还有1个元素的张量（标量）；[1,3]表示1行3列的张量（向量）；[2, 3]表示2行3列的张量（矩阵）
 }
 
 impl Tensor {
@@ -51,5 +52,92 @@ impl Tensor {
             data: na::DMatrix::identity(size, size),
             shape: vec![size, size],
         }
+    }
+}
+
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓trait点乘↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+use std::ops::Mul;
+
+impl Mul<f32> for Tensor {
+    type Output = Tensor;
+
+    fn mul(self, rhs: f32) -> Tensor {
+        Tensor {
+            data: self.data.map(|x| x * rhs),
+            shape: self.shape.clone(),
+        }
+    }
+}
+
+impl Mul<Tensor> for f32 {
+    type Output = Tensor;
+
+    fn mul(self, rhs: Tensor) -> Tensor {
+        rhs * self
+    }
+}
+
+impl Mul<Tensor> for Tensor {
+    type Output = Tensor;
+
+    fn mul(self, rhs: Tensor) -> Tensor {
+        if rhs.shape() == &vec![1, 1] {
+            let scalar = rhs.to_scalar().unwrap();
+            Tensor {
+                data: self.data.map(|x| x * scalar),
+                shape: self.shape.clone(),
+            }
+        } else {
+            panic!("Unsupported tensor shape for multiplication");
+        }
+    }
+}
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑trait点乘↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+use std::fmt;
+
+impl fmt::Display for Tensor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "形状: {:?}", self.shape())?;
+
+        let max_rows = if self.shape()[0] > 6 {
+            3
+        } else {
+            self.shape()[0]
+        };
+        let max_cols = if self.shape()[1] > 6 {
+            3
+        } else {
+            self.shape()[1]
+        };
+        for i in 0..max_rows {
+            for j in 0..max_cols {
+                write!(f, "{:8.4} ", self.data().index((i, j)))?;
+            }
+            if self.shape()[1] > 6 {
+                write!(f, "   ..  ")?;
+                for j in self.shape()[1] - 3..self.shape()[1] {
+                    write!(f, "{:8.4} ", self.data().index((i, j)))?;
+                }
+            }
+            writeln!(f)?;
+        }
+        if self.shape()[0] > 6 {
+            let padding = (max_cols * 9) / 2 - 1;
+            let padding_str = " ".repeat(padding);
+            writeln!(f, "{} ..  ", padding_str)?;
+            for i in self.shape()[0] - 3..self.shape()[0] {
+                for j in 0..max_cols {
+                    write!(f, "{:8.4} ", self.data().index((i, j)))?;
+                }
+                if self.shape()[1] > 6 {
+                    write!(f, "   ..  ")?;
+                    for j in self.shape()[1] - 3..self.shape()[1] {
+                        write!(f, "{:8.4} ", self.data().index((i, j)))?;
+                    }
+                }
+                writeln!(f)?;
+            }
+        }
+        Ok(())
     }
 }
