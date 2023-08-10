@@ -1,9 +1,11 @@
 use nalgebra as na;
 use rand::distributions::{Distribution, Uniform};
 
+// TODO： 将其拓展到最多3（4?）个维度（因为图像需要3个维度,再加上批处理就有4个维度了）
 #[derive(Debug, Clone)]
 pub struct Tensor {
     data: na::DMatrix<f32>,
+    // data: Vec<na::DMatrix<f32>>,
     shape: Vec<usize>, // 用于存储Tensor的形状。其至少有2个元素，代表行与列，[1，1]表示含还有1个元素的张量（标量）；[1,3]表示1行3列的张量（向量）；[2, 3]表示2行3列的张量（矩阵）
 }
 
@@ -56,6 +58,10 @@ impl Tensor {
 }
 
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓trait点乘↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+// TODO：应该实现点乘的trait，tensor和tensor之间的点乘，tensor和scalar之间的点乘均返回tensor
+// 1.tensor和scalar之间的点乘是将scalar广播到tensor的每个元素上；
+// 2.tensor和tensor之间的点乘需要保证2者的形状相同；若其中一个形状是[1,1]（即scalar），则遵循1中的原则。否则panic
+// 3.不知后期Tensor添加`grad`字段后1和2是否需要修改；
 use std::ops::Mul;
 
 impl Mul<f32> for Tensor {

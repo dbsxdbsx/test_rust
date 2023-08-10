@@ -48,7 +48,7 @@ mod tests {
     fn test_random() {
         let tensor = Tensor::random(2, 3, 0.0, 1.0);
         assert_eq!(tensor.shape(), &[2, 3]);
-        assert!(tensor.data().iter().all(|&x| x >= 0.0 && x <= 1.0));
+        assert!(tensor.data().iter().all(|&x| (0.0..=1.0).contains(&x)));
     }
 
     #[test]
