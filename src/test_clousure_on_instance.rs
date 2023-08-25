@@ -39,3 +39,42 @@ impl Deref for CustomizeStruct {
         &*self.closure
     }
 }
+
+
+// another example
+// use std::ops::Deref;
+
+// enum Argument {
+//     Int(i32),
+//     Str(String),
+// }
+
+// struct CustomizeStruct {
+//     closure: Box<dyn Fn(Argument) -> i32>,
+// }
+
+// impl CustomizeStruct {
+//     fn new() -> Self {
+//         CustomizeStruct {
+//             closure: Box::new(|arg: Argument| {
+//                 match arg {
+//                     Argument::Int(value) => {
+//                         println!("调用 CustomizeStruct，参数: {}", value);
+//                     }
+//                     Argument::Str(value) => {
+//                         println!("调用 CustomizeStruct，参数: {}", value);
+//                     }
+//                 }
+//                 42
+//             }),
+//         }
+//     }
+// }
+
+// impl Deref for CustomizeStruct {
+//     type Target = dyn Fn(Argument) -> i32;
+
+//     fn deref(&self) -> &Self::Target {
+//         &*self.closure
+//     }
+// }
