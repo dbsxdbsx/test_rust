@@ -1,4 +1,6 @@
 mod image_tool;
+use std::cell::RefCell;
+
 use crate::image_multi::image_tool::Image;
 use minifb::{Key, Window, WindowOptions};
 
@@ -7,7 +9,11 @@ pub enum ImageType {
     Screenshot { x: i32, y: i32, w: usize, h: usize },
     ImagePath(String),
 }
-//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓test↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+thread_local! {
+    static WINDOW: RefCell<Option<Window>> = RefCell::new(None);
+}
+
 fn show_image(image: &Image, width: u32, height: u32, window: &mut Window) {
     let buffer = image.get_buffer_u32();
     window
@@ -15,7 +21,6 @@ fn show_image(image: &Image, width: u32, height: u32, window: &mut Window) {
         .unwrap();
 }
 
-// I want user use this method directly,
 pub fn test_show_image_3(title: Option<String>, image_type: ImageType) {
     let image = match image_type {
         ImageType::Screenshot { x, y, w, h } => Image::from_screen(x, y, w, h),
@@ -23,23 +28,50 @@ pub fn test_show_image_3(title: Option<String>, image_type: ImageType) {
     };
     let (width, height) = image.get_dims();
 
-    // better not reinitial the window every time the func is called
-    let mut window = Window::new(
-        &title.unwrap_or_default(),
-        width as usize,
-        height as usize,
-        WindowOptions::default(),
-    )
-    .unwrap_or_else(|e| {
-        panic!("{}", e);
-    });
+    WINDOW.with(|window_cell| {
+        let mut window_opt = window_cell.borrow_mut();
+        let window = match &mut *window_opt {
+            None => {
+                let new_window = Window::new(
+                    &title.unwrap_or_default(),
+                    width as usize,
+                    height as usize,
+                    WindowOptions {
+                        resize: true, // resizable by mouse
+                        ..WindowOptions::default()
+                    },
+                )
+                .unwrap_or_else(|e| {
+                    panic!("{}", e);
+                });
+                *window_opt = Some(new_window);
+                window_opt.as_mut().unwrap()
+            }
+            Some(window) => {
+                // Update window info
+                window.set_title(&title.unwrap_or_default());
+                // TODO: window.set_size(width as usize, height as usize);
+                window
+            }
+        };
 
-    // the code stuck here
-    // while window.is_open() && !window.is_key_down(Key::Escape) {
-    while window.is_open() && !window.is_key_down(Key::Escape) {
-        // TODO: Setup new image here
-        show_image(&image, width, height, &mut window);
-    }
+        // Directly use the window variable
+        if window.is_open() && !window.is_key_down(Key::Escape) {
+            show_image(&image, width, height, window);
+        } else {
+            // close the window safely
+            drop_window();
+        }
+    });
+}
+
+fn drop_window() {
+    WINDOW.with(|window_cell| {
+        let mut window_opt = window_cell.borrow_mut();
+        if let Some(window) = window_opt.take() {
+            drop(window);
+        }
+    });
 }
 
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑test↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

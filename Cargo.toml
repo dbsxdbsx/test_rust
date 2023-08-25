@@ -41,6 +41,6 @@ show-image = {version = "*", features = ["image"]}
 screenshots = "0.7.0"
 lazy_static = "1.4.0"
 winit = "0.28.6"
-minifb = "0.25.0"
+minifb = "*"
 
 rand = "0.8"
