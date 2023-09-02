@@ -14,14 +14,7 @@ thread_local! {
     static WINDOW: RefCell<Option<Window>> = RefCell::new(None);
 }
 
-fn show_image(image: &Image, width: u32, height: u32, window: &mut Window) {
-    let buffer = image.get_buffer_u32();
-    window
-        .update_with_buffer(&buffer, width as usize, height as usize)
-        .unwrap();
-}
-
-pub fn test_show_image_3(title: Option<String>, image_type: ImageType) {
+pub fn test_show_image(title: Option<String>, image_type: ImageType) {
     let image = match image_type {
         ImageType::Screenshot { x, y, w, h } => Image::from_screen(x, y, w, h),
         ImageType::ImagePath(path) => Image::from_path(path),
@@ -63,6 +56,13 @@ pub fn test_show_image_3(title: Option<String>, image_type: ImageType) {
             drop_window();
         }
     });
+}
+
+fn show_image(image: &Image, width: u32, height: u32, window: &mut Window) {
+    let buffer = image.get_buffer_u32();
+    window
+        .update_with_buffer(&buffer, width as usize, height as usize)
+        .unwrap();
 }
 
 fn drop_window() {
