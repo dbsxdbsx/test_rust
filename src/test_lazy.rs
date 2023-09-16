@@ -11,13 +11,13 @@ where
     F: FnOnce() -> T,
 {
     pub fn new(f: F) -> Self {
-        Lazy {
-            f: f.into(),
+        Self {
+            f: Some(f),
             value: None,
         }
     }
 
-    pub fn get_or_compute(&mut self) -> &T {
+    pub fn get(&mut self) -> &T {
         if self.value.is_none() {
             let f = self.f.take().expect("闭包已被调用");
             self.value = Some(f());
@@ -26,7 +26,12 @@ where
     }
 }
 
-pub fn expensive_computation() -> i32 {
+pub fn expensive_computation_1() -> i32 {
     println!("执行昂贵的计算...");
     42
+}
+
+pub fn expensive_computation_2(a: i32, b: i32) -> i32 {
+    println!("执行昂贵的计算...");
+    a + b
 }
