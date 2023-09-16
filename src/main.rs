@@ -5,7 +5,7 @@ use rand::Rng;
 use show_image::{create_window, ImageInfo, ImageView};
 
 use crate::test_lazy::{
-    expensive_computation_1, expensive_computation_2, get_obj1, test_multi_call, Lazy,
+    expensive_computation_1, expensive_computation_2, get_obj1, test_multi_call, LazyObject,
 };
 mod test_lazy;
 
