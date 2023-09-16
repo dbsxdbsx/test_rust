@@ -4,19 +4,17 @@ use rand::Rng;
 
 use show_image::{create_window, ImageInfo, ImageView};
 
-use crate::test_lazy::{expensive_computation_1, expensive_computation_2, Lazy};
+use crate::test_lazy::{
+    expensive_computation_1, expensive_computation_2, get_obj1, test_multi_call, Lazy,
+};
 mod test_lazy;
 
 #[show_image::main]
 fn main() {
-    let mut lazy_value = Lazy::new(move || expensive_computation_1());
-    let mut lazy_value = Lazy::new(move || expensive_computation_2(2, 3));
+    // let mut lazy_value = Lazy::new(move || expensive_computation_1());
+    // let mut lazy_value = Lazy::new(move || expensive_computation_2(2, 3));
 
-    println!("第一次获取值：");
-    println!("值为：{}", lazy_value.get());
-
-    println!("第二次获取值：");
-    println!("值为：{}", lazy_value.get());
+    test_multi_call();
 
     // let  v:Vec<i32> = vec![];
     // let _r = v.iter().all(|item| *item == 1);
