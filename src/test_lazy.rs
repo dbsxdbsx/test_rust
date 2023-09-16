@@ -1,4 +1,6 @@
-use std::sync::{Mutex, Once};
+use once_cell::sync::Lazy;
+use std::cell::RefCell;
+use std::sync::Mutex;
 
 // the basic struct for lazy const object, replacing global variables
 #[derive(Debug, Clone)]
@@ -53,57 +55,48 @@ pub fn expensive_computation_3(a: usize, b: String) -> CustomStruct {
 }
 
 /// Function for users to call
-pub fn get_obj1<F: FnOnce() -> i32 + 'static>(f: F) -> i32 {
-    static mut OBJ1: Option<LazyObject<Box<dyn FnOnce() -> i32>, i32>> = None;
-    static INIT1: Once = Once::new();
-    static LOCK1: Mutex<()> = Mutex::new(());
+pub fn get_obj1<F: FnOnce() -> i32 + Send + 'static>(f: F) -> i32 {
+    static OBJ1: Lazy<Mutex<RefCell<Option<LazyObject<Box<dyn FnOnce() -> i32 + Send>, i32>>>>> =
+        Lazy::new(|| Mutex::new(RefCell::new(None)));
 
-    unsafe {
-        INIT1.call_once(|| {
-            OBJ1 = Some(LazyObject::new(Box::new(f)));
-        });
-
-        let _guard = LOCK1.lock().unwrap();
-        OBJ1.as_mut().unwrap().get().clone()
+    let obj1 = OBJ1.lock().unwrap();
+    let mut obj1_ref = obj1.borrow_mut();
+    if obj1_ref.is_none() {
+        *obj1_ref = Some(LazyObject::new(Box::new(f)));
     }
+
+    *obj1_ref.as_mut().unwrap().get()
 }
 
 /// Function for users to call
-fn get_obj2<F: FnOnce(i32, i32) -> i32 + 'static>(f: F, a: i32, b: i32) -> i32 {
-    static mut OBJ2: Option<LazyObject<Box<dyn FnOnce() -> i32>, i32>> = None;
-    static INIT2: Once = Once::new();
-    static LOCK2: Mutex<()> = Mutex::new(());
+pub fn get_obj2<F: FnOnce(i32, i32) -> i32 + Send + 'static>(f: F, a: i32, b: i32) -> i32 {
+    static OBJ2: Lazy<Mutex<RefCell<Option<LazyObject<Box<dyn FnOnce() -> i32 + Send>, i32>>>>> =
+        Lazy::new(|| Mutex::new(RefCell::new(None)));
 
-    unsafe {
-        INIT2.call_once(|| {
-            let f = Box::new(move || f(a, b));
-            OBJ2 = Some(LazyObject::new(f));
-        });
-
-        let _guard = LOCK2.lock().unwrap();
-        OBJ2.as_mut().unwrap().get().clone()
+    let obj2 = OBJ2.lock().unwrap();
+    let mut obj2_ref = obj2.borrow_mut();
+    if obj2_ref.is_none() {
+        *obj2_ref = Some(LazyObject::new(Box::new(move || f(a, b))));
     }
+    *obj2_ref.as_mut().unwrap().get()
 }
 
 /// Function for users to call
-fn get_obj3<F: FnOnce(usize, String) -> CustomStruct + 'static>(
+pub fn get_obj3<F: FnOnce(usize, String) -> CustomStruct + Send + 'static>(
     f: F,
     a: usize,
     b: String,
 ) -> CustomStruct {
-    static mut OBJ3: Option<LazyObject<Box<dyn FnOnce() -> CustomStruct>, CustomStruct>> = None;
-    static INIT3: Once = Once::new();
-    static LOCK3: Mutex<()> = Mutex::new(());
+    static OBJ3: Lazy<
+        Mutex<RefCell<Option<LazyObject<Box<dyn FnOnce() -> CustomStruct + Send>, CustomStruct>>>>,
+    > = Lazy::new(|| Mutex::new(RefCell::new(None)));
 
-    unsafe {
-        INIT3.call_once(|| {
-            let f = Box::new(move || f(a, b.clone()));
-            OBJ3 = Some(LazyObject::new(f));
-        });
-
-        let _guard = LOCK3.lock().unwrap();
-        OBJ3.as_mut().unwrap().get().clone()
+    let obj3 = OBJ3.lock().unwrap();
+    let mut obj3_ref = obj3.borrow_mut();
+    if obj3_ref.is_none() {
+        *obj3_ref = Some(LazyObject::new(Box::new(move || f(a, b))));
     }
+    obj3_ref.as_mut().unwrap().get().clone()
 }
 
 /// Test case: the loop is used to mimic multi-times call on the same lazy object
@@ -116,6 +109,7 @@ pub fn test_multi_call() {
             (i + 2) as usize,
             "example".to_string(),
         );
+        // println!("{}: obj1={:?}", i, value_1);
         println!(
             "{}: obj1={:?},obj2={:?},obj3={:?}",
             i, value_1, value_2, value_3

@@ -44,3 +44,4 @@ winit = "0.28.6"
 minifb = "*"
 
 rand = "0.8"
+once_cell ="*"

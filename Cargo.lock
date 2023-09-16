@@ -2209,6 +2209,7 @@ dependencies = [
  "minifb",
  "nalgebra",
  "ndarray",
+ "once_cell",
  "pyo3",
  "rand",
  "screenshots",
