@@ -4,67 +4,84 @@ pub enum ShareMode {
     Shared, // for (the types only for) shared block
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Config {
     name: String,
     share_mode: ShareMode,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AllConfigs {
     configs: Vec<Config>,
+    is_multi_blocks: bool,
 }
 
 impl AllConfigs {
-    /// Creates a new `AllConfigs` instance from a slice of `Config` objects.
-    ///
-    /// The method checks that at most one `Config` object in the slice has its `share_mode` field set to `ShareMode::Shared`.
-    /// If there is more than one such object, the method panics with an error message.
-    ///
-    /// Note: The method sorts the `Config` objects in the slice so that the one with `share_mode` set to `ShareMode::Shared` comes first,
-    /// and the others follow in their original order.
+    /// Creates a new `AllConfigs` instance from a slice of `Config` instances.
     ///
     /// # Arguments
     ///
-    /// * `configs` - A slice of `Config` objects to include in the `AllConfigs` instance.
-    ///
-    /// # Returns
-    ///
-    /// A new `AllConfigs` instance containing the `Config` objects in the slice.
+    /// * `configs`: A slice of `Config` instances to be included in the `AllConfigs` instance.
     ///
     /// # Panics
     ///
-    /// The method panics if there is more than one `Config` object in the slice with `share_mode` set to `ShareMode::Shared`.
+    /// Panics if there are more than one `Config` instances with `ShareMode::Shared`.
     ///
-    /// # Examples
+    /// # Returns
     ///
-    /// ```
-    /// use my_crate::{AllConfigs, Config};
-    ///
-    /// let configs = vec![
-    ///     Config { share_mode: ShareMode::Unique, .. },
-    ///     Config { share_mode: ShareMode::Unique, .. },
-    ///     Config { share_mode: ShareMode::Shared, .. },
-    /// ];
-    ///
-    /// let all_configs = AllConfigs::new(&configs);
-    /// ```
+    /// A new `AllConfigs` instance with the `Config` instances sorted so that the one with `ShareMode::Shared`
+    /// comes first, followed by the ones with `ShareMode::Unique`. The `share_mode` field of the instance is
+    /// set to `ShareMode::Unique` if there is no `Config` instance with `ShareMode::Shared`, or to `ShareMode::Shared`
+    /// otherwise.
     pub fn new(configs: &[Config]) -> Self {
+        // pre-check
         let shared_count = configs
             .iter()
             .filter(|c| c.share_mode == ShareMode::Shared)
             .count();
         assert!(shared_count <= 1, "Only one shared config is allowed");
-
         // put config with shared_mode == true at very first, and leave others no changed
         let mut configs = configs.to_owned();
         configs.sort_by_key(|c| c.share_mode != ShareMode::Shared);
-        AllConfigs {
+        let mut configs = AllConfigs {
             configs: configs.into(),
-        }
+            is_multi_blocks: false,
+        };
+        // check validation and if it is multi-blocks case
+        configs.is_multi_blocks = if configs.get_shared_config().is_some() {
+            assert!(configs.get_regular_configs().len() > 1);
+            false
+        } else {
+            assert!(configs.get_regular_configs().len() == 1);
+            true
+        };
+        // return
+        configs
     }
 
     pub fn iter(&self) -> impl Iterator<Item = &Config> {
         self.configs.iter()
+    }
+
+    pub fn get_regular_configs(&self) -> &[Config] {
+        let shared_config_index = self
+            .configs
+            .iter()
+            .position(|c| c.share_mode == ShareMode::Shared);
+        match shared_config_index {
+            Some(index) => &self.configs[index + 1..self.configs.len()],
+            None => &self.configs[..],
+        }
+    }
+
+    pub fn get_shared_config(&self) -> Option<&Config> {
+        self.configs
+            .iter()
+            .find(|c| c.share_mode == ShareMode::Shared)
+    }
+
+    pub fn is_multi_blocks(&self) -> bool {
+        self.is_multi_blocks
     }
 }
 
@@ -85,42 +102,78 @@ impl IntoIterator for AllConfigs {
         self.configs.into_iter()
     }
 }
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-pub fn test_loop_for_custom_struct() {
-    let configs = &[
-        Config {
-            name: "Config 2".to_string(),
-            share_mode: ShareMode::Unique,
-        },
-        Config {
-            name: "Config 1".to_string(),
-            share_mode: ShareMode::Unique,
-        },
-        Config {
-            name: "Shared Config".to_string(),
-            share_mode: ShareMode::Shared,
-        },
-    ];
+    #[test]
+    fn test_all_configs() {
+        let configs = &[
+            Config {
+                name: "Config 2".to_string(),
+                share_mode: ShareMode::Unique,
+            },
+            Config {
+                name: "Config 1".to_string(),
+                share_mode: ShareMode::Unique,
+            },
+            Config {
+                name: "Shared Config".to_string(),
+                share_mode: ShareMode::Shared,
+            },
+        ];
 
-    let struct_for_loop = AllConfigs::new(configs);
+        let all_configs = AllConfigs::new(configs);
 
-    for config in &struct_for_loop {
-        println!("{}", config.name);
+        assert_eq!(
+            all_configs.get_shared_config().unwrap().name,
+            "Shared Config"
+        );
+        assert_eq!(all_configs.get_regular_configs().len(), 2);
+        assert_eq!(all_configs.iter().count(), 3);
+
+        let mut iter = all_configs.iter();
+        assert_eq!(iter.next().unwrap().name, "Shared Config");
+        assert_eq!(iter.next().unwrap().name, "Config 2");
+        assert_eq!(iter.next().unwrap().name, "Config 1");
+        assert_eq!(iter.next(), None);
+
+        let mut iter = all_configs.clone().into_iter();
+        assert_eq!(iter.next().unwrap().name, "Shared Config");
+        assert_eq!(iter.next().unwrap().name, "Config 2");
+        assert_eq!(iter.next().unwrap().name, "Config 1");
+        assert_eq!(iter.next(), None);
     }
-    println!("======================");
-    for config in struct_for_loop.iter() {
-        println!("{}", config.name);
-    }
-    println!("======================");
-    for (index, config) in struct_for_loop.iter().enumerate() {
-        println!("Index {}: {}", index, config.name);
-    }
-    // println!("======================");
-    // for config in struct_for_loop.into_iter() {
-    //     println!("into: {}", config.name);
-    // }
-    println!("======================");
-    for (index, config) in struct_for_loop.into_iter().enumerate() {
-        println!("into: Index {}: {}", index, config.name);
+
+    #[test]
+    fn test_all_configs_enumerate() {
+        let configs = &[
+            Config {
+                name: "Config 2".to_string(),
+                share_mode: ShareMode::Unique,
+            },
+            Config {
+                name: "Config 1".to_string(),
+                share_mode: ShareMode::Unique,
+            },
+            Config {
+                name: "Shared Config".to_string(),
+                share_mode: ShareMode::Shared,
+            },
+        ];
+
+        let all_configs = AllConfigs::new(configs);
+
+        let mut iter = all_configs.iter().enumerate();
+        assert_eq!(iter.next().unwrap(), (0, &configs[2]));
+        assert_eq!(iter.next().unwrap(), (1, &configs[0]));
+        assert_eq!(iter.next().unwrap(), (2, &configs[1]));
+        assert_eq!(iter.next(), None);
+
+        let mut iter = all_configs.clone().into_iter().enumerate();
+        assert_eq!(iter.next().unwrap(), (0, configs[2].clone()));
+        assert_eq!(iter.next().unwrap(), (1, configs[0].clone()));
+        assert_eq!(iter.next().unwrap(), (2, configs[1].clone()));
+        assert_eq!(iter.next(), None);
     }
 }
