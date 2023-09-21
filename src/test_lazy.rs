@@ -1,4 +1,4 @@
-use once_cell::sync::Lazy;
+use once_cell::sync::Lazy; // need once_cell crate
 use std::cell::RefCell;
 use std::sync::Mutex;
 
@@ -25,7 +25,7 @@ where
 
     pub fn get(&mut self) -> &T {
         if self.value.is_none() {
-            let f = self.f.take().expect("Closure has been called");
+            let f = self.f.take().unwrap();
             self.value = Some(f());
         }
         self.value.as_ref().unwrap()
@@ -55,7 +55,7 @@ pub fn expensive_computation_3(a: usize, b: String) -> CustomStruct {
 }
 
 /// Function for users to call
-pub fn get_obj1<F: FnOnce() -> i32 + Send + 'static>(f: F) -> i32 {
+pub fn get_global_obj1<F: FnOnce() -> i32 + Send + 'static>(f: F) -> i32 {
     static OBJ1: Lazy<Mutex<RefCell<Option<LazyObject<Box<dyn FnOnce() -> i32 + Send>, i32>>>>> =
         Lazy::new(|| Mutex::new(RefCell::new(None)));
 
@@ -69,7 +69,7 @@ pub fn get_obj1<F: FnOnce() -> i32 + Send + 'static>(f: F) -> i32 {
 }
 
 /// Function for users to call
-pub fn get_obj2<F: FnOnce(i32, i32) -> i32 + Send + 'static>(f: F, a: i32, b: i32) -> i32 {
+pub fn get_global_obj2<F: FnOnce(i32, i32) -> i32 + Send + 'static>(f: F, a: i32, b: i32) -> i32 {
     static OBJ2: Lazy<Mutex<RefCell<Option<LazyObject<Box<dyn FnOnce() -> i32 + Send>, i32>>>>> =
         Lazy::new(|| Mutex::new(RefCell::new(None)));
 
@@ -82,7 +82,7 @@ pub fn get_obj2<F: FnOnce(i32, i32) -> i32 + Send + 'static>(f: F, a: i32, b: i3
 }
 
 /// Function for users to call
-pub fn get_obj3<F: FnOnce(usize, String) -> CustomStruct + Send + 'static>(
+pub fn get_global_obj3<F: FnOnce(usize, String) -> CustomStruct + Send + 'static>(
     f: F,
     a: usize,
     b: String,
@@ -102,9 +102,9 @@ pub fn get_obj3<F: FnOnce(usize, String) -> CustomStruct + Send + 'static>(
 /// Test case: the loop is used to mimic multi-times call on the same lazy object
 pub fn test_multi_call() {
     for i in 0..3 {
-        let value_1 = get_obj1(expensive_computation_1);
-        let value_2 = get_obj2(expensive_computation_2, i, i + 1);
-        let value_3 = get_obj3(
+        let value_1 = get_global_obj1(expensive_computation_1);
+        let value_2 = get_global_obj2(expensive_computation_2, i, i + 1);
+        let value_3 = get_global_obj3(
             expensive_computation_3,
             (i + 2) as usize,
             "example".to_string(),
