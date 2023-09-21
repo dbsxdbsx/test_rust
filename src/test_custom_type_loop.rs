@@ -5,14 +5,14 @@ pub enum ShareMode {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Config {
+pub struct Opts {
     name: String,
     share_mode: ShareMode,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AllConfigs {
-    configs: Vec<Config>,
+    configs: Vec<Opts>,
     is_multi_blocks: bool,
 }
 
@@ -33,7 +33,7 @@ impl AllConfigs {
     /// comes first, followed by the ones with `ShareMode::Unique`. The `share_mode` field of the instance is
     /// set to `ShareMode::Unique` if there is no `Config` instance with `ShareMode::Shared`, or to `ShareMode::Shared`
     /// otherwise.
-    pub fn new(configs: &[Config]) -> Self {
+    pub fn new(configs: &[Opts]) -> Self {
         // pre-check
         let shared_count = configs
             .iter()
@@ -59,11 +59,11 @@ impl AllConfigs {
         configs
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = &Config> {
+    pub fn iter(&self) -> impl Iterator<Item = &Opts> {
         self.configs.iter()
     }
 
-    pub fn get_regular_configs(&self) -> &[Config] {
+    pub fn get_regular_configs(&self) -> &[Opts] {
         let shared_config_index = self
             .configs
             .iter()
@@ -74,7 +74,7 @@ impl AllConfigs {
         }
     }
 
-    pub fn get_shared_config(&self) -> Option<&Config> {
+    pub fn get_shared_config(&self) -> Option<&Opts> {
         self.configs
             .iter()
             .find(|c| c.share_mode == ShareMode::Shared)
@@ -86,8 +86,8 @@ impl AllConfigs {
 }
 
 impl<'a> IntoIterator for &'a AllConfigs {
-    type Item = &'a Config;
-    type IntoIter = std::slice::Iter<'a, Config>;
+    type Item = &'a Opts;
+    type IntoIter = std::slice::Iter<'a, Opts>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.configs.iter()
@@ -95,8 +95,8 @@ impl<'a> IntoIterator for &'a AllConfigs {
 }
 
 impl IntoIterator for AllConfigs {
-    type Item = Config;
-    type IntoIter = std::vec::IntoIter<Config>;
+    type Item = Opts;
+    type IntoIter = std::vec::IntoIter<Opts>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.configs.into_iter()
@@ -109,15 +109,15 @@ mod tests {
     #[test]
     fn test_all_configs() {
         let configs = &[
-            Config {
+            Opts {
                 name: "Config 2".to_string(),
                 share_mode: ShareMode::Unique,
             },
-            Config {
+            Opts {
                 name: "Config 1".to_string(),
                 share_mode: ShareMode::Unique,
             },
-            Config {
+            Opts {
                 name: "Shared Config".to_string(),
                 share_mode: ShareMode::Shared,
             },
@@ -148,15 +148,15 @@ mod tests {
     #[test]
     fn test_all_configs_enumerate() {
         let configs = &[
-            Config {
+            Opts {
                 name: "Config 2".to_string(),
                 share_mode: ShareMode::Unique,
             },
-            Config {
+            Opts {
                 name: "Config 1".to_string(),
                 share_mode: ShareMode::Unique,
             },
-            Config {
+            Opts {
                 name: "Shared Config".to_string(),
                 share_mode: ShareMode::Shared,
             },
