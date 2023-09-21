@@ -1,7 +1,13 @@
+#[derive(PartialEq, Eq, Copy, Clone, Debug, Hash)]
+pub enum ShareMode {
+    Unique, // for (the types only for) regular/no-shared block
+    Shared, // for (the types only for) shared block
+}
+
 #[derive(Debug, Clone)]
 pub struct Config {
     name: String,
-    share_mode: bool,
+    share_mode: ShareMode,
 }
 
 pub struct AllConfigs {
@@ -35,20 +41,23 @@ impl AllConfigs {
     /// use my_crate::{AllConfigs, Config};
     ///
     /// let configs = vec![
-    ///     Config { share_mode: true, .. },
-    ///     Config { share_mode: false, .. },
-    ///     Config { share_mode: false, .. },
+    ///     Config { share_mode: ShareMode::Unique, .. },
+    ///     Config { share_mode: ShareMode::Unique, .. },
+    ///     Config { share_mode: ShareMode::Shared, .. },
     /// ];
     ///
     /// let all_configs = AllConfigs::new(&configs);
     /// ```
     pub fn new(configs: &[Config]) -> Self {
-        let shared_count = configs.iter().filter(|c| c.share_mode).count();
+        let shared_count = configs
+            .iter()
+            .filter(|c| c.share_mode == ShareMode::Shared)
+            .count();
         assert!(shared_count <= 1, "Only one shared config is allowed");
 
         // put config with shared_mode == true at very first, and leave others no changed
         let mut configs = configs.to_owned();
-        configs.sort_by_key(|c| !c.share_mode);
+        configs.sort_by_key(|c| c.share_mode != ShareMode::Shared);
         AllConfigs {
             configs: configs.into(),
         }
@@ -80,16 +89,16 @@ impl IntoIterator for AllConfigs {
 pub fn test_loop_for_custom_struct() {
     let configs = &[
         Config {
-            name: "Config 1".to_string(),
-            share_mode: false,
+            name: "Config 2".to_string(),
+            share_mode: ShareMode::Unique,
         },
         Config {
-            name: "Config 2".to_string(),
-            share_mode: false,
+            name: "Config 1".to_string(),
+            share_mode: ShareMode::Unique,
         },
         Config {
             name: "Shared Config".to_string(),
-            share_mode: true,
+            share_mode: ShareMode::Shared,
         },
     ];
 
