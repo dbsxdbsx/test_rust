@@ -17,10 +17,10 @@ pub struct AllConfigs {
 impl AllConfigs {
     /// Creates a new `AllConfigs` instance from a slice of `Config` objects.
     ///
-    /// The method checks that at most one `Config` object in the slice has its `share_mode` field set to `true`.
+    /// The method checks that at most one `Config` object in the slice has its `share_mode` field set to `ShareMode::Shared`.
     /// If there is more than one such object, the method panics with an error message.
     ///
-    /// Note: The method sorts the `Config` objects in the slice so that the one with `share_mode` set to `true` comes first,
+    /// Note: The method sorts the `Config` objects in the slice so that the one with `share_mode` set to `ShareMode::Shared` comes first,
     /// and the others follow in their original order.
     ///
     /// # Arguments
@@ -33,7 +33,7 @@ impl AllConfigs {
     ///
     /// # Panics
     ///
-    /// The method panics if there is more than one `Config` object in the slice with `share_mode` set to `true`.
+    /// The method panics if there is more than one `Config` object in the slice with `share_mode` set to `ShareMode::Shared`.
     ///
     /// # Examples
     ///
