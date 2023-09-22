@@ -7,7 +7,7 @@ pub enum ShareMode {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Opts {
     name: String,
-    share_mode: ShareMode,
+    shared: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -35,14 +35,11 @@ impl AllConfigs {
     /// otherwise.
     pub fn new(configs: &[Opts]) -> Self {
         // pre-check
-        let shared_count = configs
-            .iter()
-            .filter(|c| c.share_mode == ShareMode::Shared)
-            .count();
+        let shared_count = configs.iter().filter(|c| c.shared).count();
         assert!(shared_count <= 1, "Only one shared config is allowed");
         // put config with shared_mode == true at very first, and leave others no changed
         let mut configs = configs.to_owned();
-        configs.sort_by_key(|c| c.share_mode != ShareMode::Shared);
+        configs.sort_by_key(|c| !c.shared);
         let mut configs = AllConfigs {
             configs: configs.into(),
             is_multi_blocks: false,
@@ -64,10 +61,7 @@ impl AllConfigs {
     }
 
     pub fn get_regular_configs(&self) -> &[Opts] {
-        let shared_config_index = self
-            .configs
-            .iter()
-            .position(|c| c.share_mode == ShareMode::Shared);
+        let shared_config_index = self.configs.iter().position(|c| c.shared);
         match shared_config_index {
             Some(index) => &self.configs[index + 1..self.configs.len()],
             None => &self.configs[..],
@@ -75,9 +69,7 @@ impl AllConfigs {
     }
 
     pub fn get_shared_config(&self) -> Option<&Opts> {
-        self.configs
-            .iter()
-            .find(|c| c.share_mode == ShareMode::Shared)
+        self.configs.iter().find(|c| c.shared)
     }
 
     pub fn is_multi_blocks(&self) -> bool {
@@ -111,15 +103,15 @@ mod tests {
         let configs = &[
             Opts {
                 name: "Config 2".to_string(),
-                share_mode: ShareMode::Unique,
+                shared: false,
             },
             Opts {
                 name: "Config 1".to_string(),
-                share_mode: ShareMode::Unique,
+                shared: false,
             },
             Opts {
                 name: "Shared Config".to_string(),
-                share_mode: ShareMode::Shared,
+                shared: true,
             },
         ];
 
@@ -150,15 +142,15 @@ mod tests {
         let configs = &[
             Opts {
                 name: "Config 2".to_string(),
-                share_mode: ShareMode::Unique,
+                shared: false,
             },
             Opts {
                 name: "Config 1".to_string(),
-                share_mode: ShareMode::Unique,
+                shared: false,
             },
             Opts {
                 name: "Shared Config".to_string(),
-                share_mode: ShareMode::Shared,
+                shared: true,
             },
         ];
 
