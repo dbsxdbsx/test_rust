@@ -17,21 +17,21 @@ pub struct AllConfigs {
 }
 
 impl AllConfigs {
-    /// Creates a new `AllConfigs` instance from a slice of `Config` instances.
+    /// Creates a new `AllConfigs` instance from a slice of `Opts` instances.
     ///
     /// # Arguments
     ///
-    /// * `configs`: A slice of `Config` instances to be included in the `AllConfigs` instance.
+    /// * `configs`: A slice of `Opts` instances to be included in the `AllConfigs` instance.
     ///
     /// # Panics
     ///
-    /// Panics if there are more than one `Config` instances with `ShareMode::Shared`.
+    /// Panics if there are more than one `Opts` instances with `shared` set to `true`.
     ///
     /// # Returns
     ///
-    /// A new `AllConfigs` instance with the `Config` instances sorted so that the one with `ShareMode::Shared`
-    /// comes first, followed by the ones with `ShareMode::Unique`. The `share_mode` field of the instance is
-    /// set to `ShareMode::Unique` if there is no `Config` instance with `ShareMode::Shared`, or to `ShareMode::Shared`
+    /// A new `AllConfigs` instance with the `Opts` instances sorted so that the one with `shared: true`
+    /// comes first, followed by the ones with `shared: false`. The `is_multi_blocks` field of the instance is
+    /// set to `true` if there is no `Opts` instance with `shared: true`; or the field is set to `true`
     /// otherwise.
     pub fn new(configs: &[Opts]) -> Self {
         // pre-check
