@@ -13,6 +13,7 @@ impl MyStruct {
 fn test() {
     panic!("test");
 }
+
 fn main() {
     test();
     let op = Some(MyStruct {
