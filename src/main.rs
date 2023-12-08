@@ -1,27 +1,24 @@
-mod test_custom_type_loop;
-
-struct MyStruct {
-    rust_output_path: String,
-}
-impl MyStruct {
-    pub fn get_complex(&self) -> Vec<usize> {
-        println!("======================");
-        vec![1, 2, 3, 4]
-    }
-}
-
-fn test() {
-    panic!("test");
-}
+use std::collections::{HashMap, HashSet};
 
 fn main() {
-    test();
-    let op = Some(MyStruct {
-        rust_output_path: "".to_string(),
-    });
-    let r = op.unwrap();
+    let mut my_map = HashMap::<usize, HashSet<String>>::new();
 
-    r.get_complex().iter().for_each(|each| {
-        println!("{:?}", each);
-    });
+    for i in 0..10 {
+        my_map
+            .entry(i)
+            .or_insert_with(|| HashSet::from(["a".to_string()]));
+    }
+
+    println!("{:?}", my_map);
+
+    for key in 0..10 {
+        my_map
+            .entry(key)
+            .and_modify(|v| {
+                v.insert("b".to_string());
+            })
+            .or_insert_with(|| HashSet::from(["a".to_string()]));
+    }
+
+    println!("{:?}", my_map);
 }
