@@ -24,7 +24,7 @@
     ]
 [dependencies]
     # opencv = "0.82.1"
-    pyo3="0.19.2"
+    pyo3="0.20"
     winapi={version="0.3.9", features=[
         "winuser",
         "libloaderapi",
@@ -64,5 +64,11 @@
 
     meilisearch-sdk="0.24.3"
 
-    tokio={version="1", features=["full"]}
+    tokio  ={version="1", features=["full"]}
     futures="*"
+
+    gstreamer       ="0.21"
+    gstreamer-player="0.21"
+    urlencoding     ="2.1"
+
+    # gstreamer-pbutils = "0.19"

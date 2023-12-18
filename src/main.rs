@@ -1,29 +1,14 @@
-use crate::test_database::TestDatabase;
-
-mod test_database;
-
+mod test_gstreamer;
 fn main() {
-    // let db = TestDatabase::new("Mytest.db").unwrap();
-    // println!("Database name: {}", db.get_database_name());
-    // println!("Tables count: {}", db.get_tables_count().unwrap());
-    // println!(
-    //     "Items count: {}",
-    //     db.get_items_count("users").unwrap_or_else(|_| {
-    //         println!("No such table or the table name is incorrect.");
-    //         0
-    //     })
-    // );
+    let url =
+        "https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm";
+    // let url = "https://jmc-live.ercdn.net/alistiqama/alistiqama.m3u8";
+    // let url = r"D:\MEDIA\VIDEO\小露一手.mp4";
+    let url = r"D:\MEDIA\VIDEO\中文\夏颖瑜.mp4";
+    // let url = format!("file:///{}", url.replace("\\", "/"));
 
-    // // Add test table 'users'
-    // let fields = vec![("id", "INTEGER"), ("name", "TEXT"), ("age", "INTEGER")];
-    // db.create_table_if_not_existed("users", &fields).unwrap();
-    // println!("Items count: {}", db.get_items_count("users").unwrap());
-
-    // let user = test_database::User {
-    //     id: 1,
-    //     name: "Alice".to_string(),
-    //     age: 20,
-    // };
-    // db.add_item("users", &user).unwrap();
-    // println!("Items count: {}", db.get_items_count("users").unwrap());
+    // let url = r"D:\MEDIA\VIDEO\ttt.mp4";
+    let url = r"D:\MEDIA\VIDEO\喧嚣学院\[アニメ DVD] スクールランブル ♯06「放課後のサバイバル！ 告白の時、アライバル！ 二人きりのホスピタル！」(720p x264 10bit AAC chap) .mp4";
+    let subtitle = r"D:\MEDIA\VIDEO\喧嚣学院\[アニメ DVD] スクールランブル ♯06「放課後のサバイバル！ 告白の時、アライバル！ 二人きりのホスピタル！」(720p x264 10bit AAC chap) .ssa";
+    test_gstreamer::test(url, subtitle);
 }

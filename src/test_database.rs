@@ -75,23 +75,6 @@ impl TestDatabase {
             .map_err(|e| anyhow::Error::new(e))
             .map(|_| ())
     }
-    // TODO: 这个方法有问题，暂时不用
-    // pub fn add_item<T: ToSql>(&self, table_name: &str, item: &T, columns: &[&str]) -> Result<()> {
-    //     let placeholders = std::iter::repeat("?")
-    //         .take(columns.len())
-    //         .collect::<Vec<_>>()
-    //         .join(", ");
-    //     let query = format!(
-    //         "INSERT INTO {} ({}) VALUES ({})",
-    //         table_name,
-    //         columns.join(", "),
-    //         placeholders
-    //     );
-    //     self.conn
-    //         .execute(&query, params![item.to_sql()?])
-    //         .map_err(|e| anyhow::Error::new(e))
-    //         .map(|_| ())
-    // }
 
     pub fn add_item<T: Serialize>(&self, table_name: &str, item: &T) -> Result<()> {
         let serialized_item = serde_json::to_value(item)?;
@@ -149,26 +132,6 @@ impl TestDatabase {
             .map_err(|e| anyhow::Error::new(e))
             .map(|_| ())
     }
-    // TODO: use MeiliSearch instead?
-    // pub fn find_item_by_name(&self, table_name: &str, name: &str) -> Result<Vec<User>> {
-    //     let mut stmt = self
-    //         .conn
-    //         .prepare(&format!("SELECT * FROM {} WHERE name = ?", table_name))?;
-    //     let rows = stmt.query_map(params![name], |row| {
-    //         Ok(User {
-    //             id: row.get(0)?,
-    //             name: row.get(1)?,
-    //             age: row.get(2)?,
-    //             nick_names: row.get(3)?,
-    //         })
-    //     })?;
-
-    //     let mut items = Vec::new();
-    //     for item_result in rows {
-    //         items.push(item_result?);
-    //     }
-    //     Ok(items)
-    // }
 }
 impl Drop for TestDatabase {
     fn drop(&mut self) {
@@ -269,7 +232,5 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_controller() {
-
-    }
+    async fn test_controller() {}
 }
