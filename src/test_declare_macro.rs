@@ -1,28 +1,3 @@
-macro_rules! refine_fn_body {
-    // 匹配有默认实现的函数定义
-    (
-        $fn_name_with_impl:ident($($arg_with_impl:tt)*) $(-> $ret_ty_with_impl:ty)? { $($fn_body:tt)* }
-    ) => {
-        paste! {
-            // fn $fn_name($($arg)*) $(-> $ret_ty)? {
-            //     $($fn_body)*
-            // }
-            fn $fn_name_with_impl($arg_with_impl) -> $ret_ty_with_impl {
-                $fn_body
-            }
-        }
-    };
-    // 匹配没有默认实现的函数定义
-    (
-        $fn_name_with_no_impl:ident($($arg_with_no_impl:tt)*) $(-> $ret_ty_with_no_imple:ty)?;
-    ) => {
-        paste! {
-            // fn $fn_name($($arg)*) $(-> $ret_ty)?;
-            fn $fn_name_with_no_impl($arg_with_no_impl) -> $ret_ty_with_no_imple;
-        }
-    };
-}
-
 macro_rules! trait_var {
     (
         // 匹配 trait 关键字和 trait 名称
@@ -32,9 +7,7 @@ macro_rules! trait_var {
                 let $var_name:ident : $var_type:ty;
             )*
             // 匹配函数定义，无论是否有默认实现
-            $(
-                fn $($fn_def:tt)*
-            )*
+            $(fn $($fn_def:tt)*)*
         }
     ) => {
         // 生成 trait 定义
@@ -47,20 +20,10 @@ macro_rules! trait_var {
                 }
             )*
             // 使用 refine_fn_body 宏处理函数定义
-            $(
-                refine_fn_body!($fn_def)
-            )*
+            $(refine_fn_body!($($fn_def)*))*;
         }
     };
 }
-
-// --------------------------------------------
-macro_rules! replace_self {
-    ($self:ident . $var:ident) => {
-        _ $var ()
-    };
-}
-// --------------------------------------------
 
 trait_var! {
     trait MyTrait {
@@ -94,43 +57,18 @@ trait_var! {
 // #[trait_variable(MyTrait)]
 struct MyStruct {
     my_field: i32,
-    x: i32,
 }
 
 impl MyStruct {
-    fn struct_method(&self) {
-        println!("struct_method: my_field is {}", self.my_field);
+    fn self_method(&self) {
+        println!("self_method: my_field is {}", self.my_field);
     }
 }
 
-impl MyTrait for MyStruct {
-    fn _x(&self) -> &i32 {
-        todo!()
-    }
-
-    fn _x_mut(&mut self) -> &mut i32 {
-        todo!()
-    }
-
-    fn _y(&self) -> &bool {
-        todo!()
-    }
-
-    fn _y_mut(&mut self) -> &mut bool {
-        todo!()
-    }
-
-    fn _z(&self) -> &String {
-        todo!()
-    }
-
-    fn _z_mut(&mut self) -> &mut String {
-        todo!()
-    }
-}
+impl MyTrait for MyStruct {}
 
 pub fn test() {
-    let my_struct = MyStruct { my_field: 10, x: 5 };
+    let my_struct = MyStruct { my_field: 10 };
     my_struct.struct_method();
     my_struct.trait_method_with_default_impl();
     // my_struct.trait_print2();

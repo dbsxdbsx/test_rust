@@ -43,11 +43,11 @@ macro_rules! my_helper {
     );
 }
 
-fn main() {
+pub fn test() {
     // This is ok
-    my_macro!(foo: "bar", "Hello!");
-    my_macro!(foo: "bar", "Hello {}!", "world");
-    my_macro!(foo: "bar", "Hello {} {}!", "fellow", "rusticians");
+    // my_macro!(foo: "bar", "Hello!");
+    // my_macro!(foo: "bar", "Hello {}!", "world");
+    // my_macro!(foo: "bar", "Hello {} {}!", "fellow", "rusticians");
 
     // This is not
     my_macro!(foo: "bar", bu: "baz", "Hello!");
