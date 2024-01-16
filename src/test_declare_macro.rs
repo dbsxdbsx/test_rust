@@ -1,5 +1,11 @@
 use paste::paste;
 
+macro_rules! replace_self {
+    ($self:ident . $var:ident) => {
+        _ $var ()
+    };
+}
+
 macro_rules! trait_var {
     (
         // 匹配 trait 关键字和 trait 名称
@@ -8,9 +14,7 @@ macro_rules! trait_var {
             $(
                 let $var_name:ident : $var_type:ty;
             )*
-            // fn $fn_name:ident($($arg:tt)*) {
-            //     $($body:tt)*
-            // }
+            // 匹配所有合法的函数定义
             fn $fn_name:ident($($arg:tt)*)$($body:tt)*
         }
     ) => {
@@ -23,11 +27,11 @@ macro_rules! trait_var {
                     fn [< _ $var_name _mut>](&mut self) -> &mut $var_type;
                 }
             )*
-            // 生成有默认实现的函数定义
-            // fn $fn_name($($arg)*) {
-            //     $($body)*
-            // }
-            fn $fn_name($($arg)*) $($body)*
+            // 复制函数定义，并替换函数体中的 self.<anyName> 模式
+            // fn $fn_name($($arg)*) $($body)*
+            fn $fn_name($($arg)*) {
+                replace_self!($($body)*)
+            }
         }
     };
 }
@@ -49,7 +53,7 @@ trait MyTrait {
 
     // `&self` method with or without default impl,
     fn trait_method_with_default_impl( &self ) {
-        println!("trait_method_with_default_impl");
+        println!("trait_method_with_default_impl， the trait field x is `{}`", self.x);
     }
     fn trait_method_mut_with_no_default_impl(&  self);
 
