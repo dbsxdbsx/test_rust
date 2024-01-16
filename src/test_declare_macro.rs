@@ -1,11 +1,3 @@
-use paste::paste;
-
-macro_rules! replace_self {
-    ($self:ident . $var:ident) => {
-        _ $var ()
-    };
-}
-
 macro_rules! trait_var {
     (
         // 匹配 trait 关键字和 trait 名称
@@ -14,8 +6,16 @@ macro_rules! trait_var {
             $(
                 let $var_name:ident : $var_type:ty;
             )*
-            // 匹配所有合法的函数定义
-            fn $fn_name:ident($($arg:tt)*)$($body:tt)*
+            // 匹配有默认实现的函数定义
+            $(
+                fn $fn_name_with_impl:ident($($arg_with_impl:tt)*) $(-> $ret_ty_with_impl:ty)? {
+                    $($fn_body:tt)*
+                }
+            )*
+            // 匹配没有默认实现的函数定义（这里检测到分号来区分）
+            $(
+                fn $fn_name_with_no_impl:ident($($arg_with_no_impl:tt)*) $(-> $ret_ty_with_no_impl:ty)?;
+            )*
         }
     ) => {
         // 生成 trait 定义
@@ -27,12 +27,45 @@ macro_rules! trait_var {
                     fn [< _ $var_name _mut>](&mut self) -> &mut $var_type;
                 }
             )*
-            // 复制函数定义，并替换函数体中的 self.<anyName> 模式
-            // fn $fn_name($($arg)*) $($body)*
-            fn $fn_name($($arg)*) {
-                replace_self!($($body)*)
-            }
+            // 生成有默认实现的函数定义
+            $(
+                paste! {
+                    fn $fn_name_with_impl($arg_with_impl) -> $ret_ty_with_impl {
+                        $fn_body
+                    }
+                }
+            )*
+            // 生成没有默认实现的函数定义
+            $(
+                paste! {
+                    fn $fn_name_with_no_impl($arg_with_no_impl) -> $ret_ty_with_no_imple;
+                }
+            )*
+
+        
         }
+    };
+}
+
+// --------------------------------------------
+macro_rules! refine_fn_body {
+    // 匹配空的函数体
+    ( ; ) => {
+        // 生成一个空的函数体
+        ;
+    };
+    // 匹配带有具体内容的函数体
+    ( { $( $body:tt )* } ) => {
+        // 生成具体的函数体
+        {
+            $( $body )*
+        }
+    };
+}
+// --------------------------------------------
+macro_rules! replace_self {
+    ($self:ident . $var:ident) => {
+        _ $var ()
     };
 }
 // --------------------------------------------
@@ -46,22 +79,22 @@ trait MyTrait {
     let z : String ;
 
     // func with or without default impl
-    fn trait_func_with_default_impl() {
+    d fn trait_func_with_default_impl() {
         println!("trait_func_with_default_impl");
     }
-    fn trait_func_with_no_default_impl();
+    // fn trait_func_with_no_default_impl();
 
     // `&self` method with or without default impl,
     fn trait_method_with_default_impl( &self ) {
-        println!("trait_method_with_default_impl， the trait field x is `{}`", self.x);
+        // println!("trait_method_with_default_impl， the trait field x is `{}`", self.x);
     }
-    fn trait_method_mut_with_no_default_impl(&  self);
+    // fn trait_method_mut_with_no_default_impl(&  self);
 
     // `&mut self` method with or without default impl
     fn trait_method_mut_with_default_impl(&  mut self) {
         println!("trait_method_mut_with_default_impl");
     }
-    fn trait_method_with_no_default_impl(&mut  self);
+    // fn trait_method_with_no_default_impl(&mut  self);
 }
 }
 
@@ -99,18 +132,6 @@ impl MyTrait for MyStruct {
     }
 
     fn _z_mut(&mut self) -> &mut String {
-        todo!()
-    }
-
-    fn trait_func_with_no_default_impl() {
-        todo!()
-    }
-
-    fn trait_method_mut_with_no_default_impl(&self) {
-        todo!()
-    }
-
-    fn trait_method_with_no_default_impl(&mut self) {
         todo!()
     }
 }
