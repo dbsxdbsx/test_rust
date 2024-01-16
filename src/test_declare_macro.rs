@@ -64,6 +64,7 @@ macro_rules! replace_self {
 
 trait_var! {
     trait MyTrait {
+    // TODO: 有返回值的情况
     // let the field definition feasible in trait
     // the below code is formatted arbitrarily for testing purpose.
         let  x: i32;
