@@ -142,8 +142,8 @@ macro_rules! trait_enhance {
                         type ViewMut = <dyn $trait_name as $crate::TraitEnhanceType<'a>>::ViewMut;
                     }
                     impl $crate::TraitEnhance for $struct_name {
-                        fn get_fields(&self) -> <Self as crate::TraitEnhanceType<'_>>::View {
-                            <Self as crate::TraitEnhanceType>::View::new($(
+                        fn get_fields(&self) -> <Self as $crate::TraitEnhanceType<'_>>::View {
+                            <Self as $crate::TraitEnhanceType>::View::new($(
                                 &self.$field_name,
                             )*)
                         }

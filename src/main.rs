@@ -1,5 +1,3 @@
-use enum_dispatch::enum_dispatch;
-
 mod test_correct_macro;
 mod test_declare_macro_example;
 mod test_declare_macro_muncher;

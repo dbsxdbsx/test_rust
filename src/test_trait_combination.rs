@@ -22,8 +22,7 @@ impl TraitB for MyStruct {
     }
 }
 
-
-pub fn test(){
+pub fn test() {
     MyStruct::a();
     MyStruct::b();
 }

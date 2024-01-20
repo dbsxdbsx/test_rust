@@ -1,5 +1,3 @@
-use base64;
-use reqwest;
 use std::str;
 
 /// 获取订阅链接内容
@@ -26,13 +24,11 @@ fn parse_servers(content: &str) -> Result<Vec<String>, base64::DecodeError> {
         .map(|line| {
             let line = remove_known_prefixes(line);
             println!("{}", line);
-            base64::decode(line)
-                .map_err(|e| e)
-                .and_then(|config_bytes| {
-                    str::from_utf8(&config_bytes)
-                        .map(|config| config.to_string())
-                        .map_err(|_| base64::DecodeError::InvalidByte(0, 0)) // 这里只是为了类型匹配，实际应该返回正确的错误
-                })
+            base64::decode(line).and_then(|config_bytes| {
+                str::from_utf8(&config_bytes)
+                    .map(|config| config.to_string())
+                    .map_err(|_| base64::DecodeError::InvalidByte(0, 0)) // 这里只是为了类型匹配，实际应该返回正确的错误
+            })
         })
         .collect()
 }
