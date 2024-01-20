@@ -204,7 +204,7 @@ macro_rules! trait_enhance {
 trait_enhance! {
     // the lint is also activated inside the macro, using rust_anaylzer for example
     trait MyTrait {  // feel free to add `pub` when needed
-        // 1.put the variable fields definition at the top of the traget trait before any function
+        // 1.put the variable fields definition at the top of the target trait before any function
         let x: i32; // TODO: can't be without variable at present
         let y: bool;
 
@@ -229,6 +229,7 @@ trait_enhance! {
         pub b: bool, // feel free to add `pub` when needed
     }
 }
+
 impl MyTrait for MyStruct {
     fn print2(&self) {
         // println!("{}", self.get_fields().x);

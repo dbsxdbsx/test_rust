@@ -10,7 +10,7 @@ mod test_my_macro;
 mod test_proxy;
 mod test_trait_combination;
 mod test_type_check;
-pub use test_correct_macro::{TraitEnhance,TraitEnhanceType};
+pub use test_correct_macro::{TraitEnhance, TraitEnhanceType};
 
 #[tokio::main]
 async fn main() {
