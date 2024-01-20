@@ -166,7 +166,7 @@ macro_rules! trait_enhance {
         $vis:vis struct $struct_name:ident {
             $(
                 $(#[$field_attr:meta])*
-                $field_name:ident : $field_type:ty
+                $field_vis:vis $field_name:ident : $field_type:ty
             ),* $(,)?
         }
     ) => {
@@ -175,7 +175,7 @@ macro_rules! trait_enhance {
             $vis struct $struct_name {
                 $(
                     $(#[$field_attr:meta])*
-                    $field_name : $field_type,
+                    $field_vis $field_name : $field_type,
                 )*
             }
         }
@@ -224,9 +224,9 @@ trait_enhance! {
     #[trait_enhance(MyTrait)] // put this at the top of the struct
     #[derive(Default)] // feel free to use any derive macro you want
     struct MyStruct { // feel free to add `pub` when needed
-        // feel free to add any fields or leave it empty as usual
+        // feel free to add any fields as usual or leave it empty
         a: i32,
-        b: bool, // TODO: visibility is not supported yet
+        pub b: bool, // feel free to add `pub` when needed
     }
 }
 impl MyTrait for MyStruct {
@@ -245,4 +245,5 @@ pub fn test() {
     my_struct.print_x();
     my_struct.print_y();
     my_struct.print2();
+    println!("{}", my_struct.b);
 }
