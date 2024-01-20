@@ -51,11 +51,11 @@
 //     };
 // }
 // // --------------------------------------------
-// macro_rules! replace_self {
-//     ($self:ident . $var:ident) => {
-//         _ $var ()
-//     };
-// }
+macro_rules! replace_self {
+    ($self:ident . $var:ident) => {
+        _ $var ()
+    };
+}
 // // --------------------------------------------
 
 // trait_var! {

@@ -52,10 +52,6 @@
     rand     ="0.8"
     once_cell="*"
 
-    regex="*"
-    syn  ={version="2.0.26", features=["full", "extra-traits"]}
-    quote="1.0"
-
     rusqlite={version="0.30.0", features=["bundled"]}
 
     # （反）序列化
@@ -81,4 +77,13 @@
     matrixmultiply="*"
 
     # 宏
-    paste="1.0.5"
+    trait_variable = "0.2.0"
+    paste      ="1.0.5"
+    proc-macro2="1.0"
+    syn        ={version="1.0.82", features=["full"]}
+    # syn  ={version="2.0.26", features=["full", "extra-traits"]}
+    quote="1.0.10"
+    regex="*"
+
+    #
+    enum_dispatch = "0.3.12"

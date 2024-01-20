@@ -734,6 +734,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "enum_dispatch"
+version = "0.3.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f33313078bb8d4d05a2733a94ac4c2d8a0df9a2b84424ebf4f33bfc224a890e"
+dependencies = [
+ "once_cell",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.39",
+]
+
+[[package]]
 name = "equivalent"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3328,6 +3340,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "base64 0.13.1",
+ "enum_dispatch",
  "futures",
  "gstreamer",
  "gstreamer-player",
@@ -3341,6 +3354,7 @@ dependencies = [
  "ndarray",
  "once_cell",
  "paste",
+ "proc-macro2",
  "pyo3",
  "quote",
  "rand",
@@ -3351,8 +3365,9 @@ dependencies = [
  "serde",
  "serde_json",
  "show-image",
- "syn 2.0.39",
+ "syn 1.0.109",
  "tokio",
+ "trait_variable",
  "urlencoding",
  "winapi",
  "windows",
@@ -3630,6 +3645,19 @@ checksum = "97d095ae15e245a057c8e8451bab9b3ee1e1f68e9ba2b4fbc18d0ac5237835f2"
 dependencies = [
  "pin-project",
  "tracing",
+]
+
+[[package]]
+name = "trait_variable"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c15973c92a86bb38974c88c66f54a958615eeb72911ffa70e1099e73f7ddbe0c"
+dependencies = [
+ "lazy_static",
+ "once_cell",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]
