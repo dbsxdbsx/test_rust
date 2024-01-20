@@ -8,46 +8,46 @@ pub trait TraitEnhance: for<'a> TraitEnhanceType<'a> {
     fn get_fields_mut(&mut self) -> <Self as TraitEnhanceType<'_>>::ViewMut;
 }
 
-mod test_traits {
-    trait MyTrait:
-        crate::TraitEnhance
-        + for<'a> crate::TraitEnhanceType<'a, View = View<'a>, ViewMut = ViewMut<'a>>
-    {
-    }
-    pub struct View<'a> {
-        pub a: &'a i32,
-    }
-    impl<'a> View<'a> {
-        pub fn new(a: &'a i32) -> Self {
-            View { a }
-        }
-    }
-    pub struct ViewMut<'a> {
-        pub a: &'a mut i32,
-    }
-    impl<'a> ViewMut<'a> {
-        pub fn new(a: &'a mut i32) -> Self {
-            ViewMut { a }
-        }
-    }
+// mod test_traits {
+//     trait MyTrait:
+//         crate::TraitEnhance
+//         + for<'a> crate::TraitEnhanceType<'a, View = View<'a>, ViewMut = ViewMut<'a>>
+//     {
+//     }
+//     pub struct View<'a> {
+//         pub a: &'a i32,
+//     }
+//     impl<'a> View<'a> {
+//         pub fn new(a: &'a i32) -> Self {
+//             View { a }
+//         }
+//     }
+//     pub struct ViewMut<'a> {
+//         pub a: &'a mut i32,
+//     }
+//     impl<'a> ViewMut<'a> {
+//         pub fn new(a: &'a mut i32) -> Self {
+//             ViewMut { a }
+//         }
+//     }
 
-    struct MyStruct {
-        a: i32,
-    }
-    impl<'a> crate::TraitEnhanceType<'a> for MyStruct {
-        type View = <dyn MyTrait as crate::TraitEnhanceType<'a>>::View;
-        type ViewMut = <dyn MyTrait as crate::TraitEnhanceType<'a>>::ViewMut;
-    }
-    impl crate::TraitEnhance for MyStruct {
-        fn get_fields(&self) -> <dyn MyTrait as crate::TraitEnhanceType<'_>>::View {
-            <Self as crate::TraitEnhanceType>::View::new(&self.a)
-        }
-        fn get_fields_mut(&mut self) -> <dyn MyTrait as crate::TraitEnhanceType<'_>>::ViewMut {
-            <Self as crate::TraitEnhanceType>::ViewMut::new(&mut self.a)
-        }
-    }
-    impl MyTrait for MyStruct {}
-}
+//     struct MyStruct {
+//         a: i32,
+//     }
+//     impl<'a> crate::TraitEnhanceType<'a> for MyStruct {
+//         type View = <dyn MyTrait as crate::TraitEnhanceType<'a>>::View;
+//         type ViewMut = <dyn MyTrait as crate::TraitEnhanceType<'a>>::ViewMut;
+//     }
+//     impl crate::TraitEnhance for MyStruct {
+//         fn get_fields(&self) -> <dyn MyTrait as crate::TraitEnhanceType<'_>>::View {
+//             <Self as crate::TraitEnhanceType>::View::new(&self.a)
+//         }
+//         fn get_fields_mut(&mut self) -> <dyn MyTrait as crate::TraitEnhanceType<'_>>::ViewMut {
+//             <Self as crate::TraitEnhanceType>::ViewMut::new(&mut self.a)
+//         }
+//     }
+//     impl MyTrait for MyStruct {}
+// }
 
 #[macro_export]
 macro_rules! trait_enhance {
@@ -200,20 +200,33 @@ macro_rules! trait_enhance {
     };
 }
 
+// example
 trait_enhance! {
     trait MyTrait {
         let a: i32;
-        fn print(&self) {
+        let b: bool;
+        fn print_a(&self) {
             println!("{}", self.get_fields().a);
         }
+        fn print_b(&self) {
+            println!("{}", self.get_fields().b);
+        }
+        fn print2(&self);
     }
 }
 trait_enhance! {
     #[trait_enhance(MyTrait)]
-    struct MyStruct {}
+    struct MyStruct2 {}
 }
-impl MyTrait for MyStruct {}
+impl MyTrait for MyStruct2 {
+    fn print2(&self) {
+        println!("{}", self.get_fields().a);
+    }
+}
 
-fn main() {
-    MyStruct { a: 2 }.print();
+pub fn test() {
+    let my_struct = MyStruct2 { a: 2, b: true };
+    my_struct.print_a();
+    my_struct.print_b();
+    my_struct.print2();
 }
