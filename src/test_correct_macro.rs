@@ -202,31 +202,47 @@ macro_rules! trait_enhance {
 
 // example
 trait_enhance! {
-    trait MyTrait {
-        let a: i32;
-        let b: bool;
-        fn print_a(&self) {
-            println!("{}", self.get_fields().a);
+    // the lint is also activated inside the macro, using rust_anaylzer for example
+    trait MyTrait {  // feel free to add `pub` when needed
+        // 1.put the variable fields definition at the top of the traget trait before any function
+        let x: i32; // TODO: can't be without variable at present
+        let y: bool;
+
+        // 2.the order of the function definition doesn't matter
+        fn print3(&mut self);
+        fn print_x(&self) {
+            println!("{}", self.get_fields().x);
         }
-        fn print_b(&self) {
-            println!("{}", self.get_fields().b);
+        fn print_y(&self) {
+            println!("{}", self.get_fields().y);
         }
         fn print2(&self);
     }
 }
+
 trait_enhance! {
-    #[trait_enhance(MyTrait)]
-    struct MyStruct2 {}
+    #[trait_enhance(MyTrait)] // put this at the top of the struct
+    #[derive(Default)] // feel free to use any derive macro you want
+    struct MyStruct { // feel free to add `pub` when needed
+        // feel free to add any fields or leave it empty as usual
+        a: i32,
+        b: bool, // TODO: visibility is not supported yet
+    }
 }
-impl MyTrait for MyStruct2 {
+impl MyTrait for MyStruct {
     fn print2(&self) {
-        println!("{}", self.get_fields().a);
+        // println!("{}", self.get_fields().x);
+    }
+
+    fn print3(&mut self) {
+        todo!()
     }
 }
 
 pub fn test() {
-    let my_struct = MyStruct2 { a: 2, b: true };
-    my_struct.print_a();
-    my_struct.print_b();
+    // let my_struct = MyStruct2 { a: 2, b: true };
+    let my_struct = MyStruct::default();
+    my_struct.print_x();
+    my_struct.print_y();
     my_struct.print2();
 }
