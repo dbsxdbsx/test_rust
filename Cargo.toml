@@ -77,13 +77,14 @@
     matrixmultiply="*"
 
     # 宏
-    trait_variable = "0.2.0"
-    paste      ="1.0.5"
-    proc-macro2="1.0"
-    syn        ={version="1.0.82", features=["full"]}
+    trait_variable       ={git="https://github.com/dbsxdbsx/trait_variable.git", features=[]}
+    trait-variable-macros={git="https://github.com/dbsxdbsx/trait_variable_macros.git"}
+    paste                ="1.0.5"
+    proc-macro2          ="1.0"
+    syn                  ={version="1.0.82", features=["full"]}
     # syn  ={version="2.0.26", features=["full", "extra-traits"]}
     quote="1.0.10"
     regex="*"
 
     #
-    enum_dispatch = "0.3.12"
+    enum_dispatch="0.3.12"

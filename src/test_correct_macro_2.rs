@@ -220,6 +220,22 @@ trait_enhance! {
     }
 }
 
+trait_enhance! {
+    #[trait_enhance(MyTrait)] // put this at the top of the struct
+    #[derive(Default)] // feel free to use any derive macro you want
+    struct MyStruct { // feel free to add `pub` when needed
+        // feel free to add any fields as usual or leave it empty
+        a: i32,
+        pub b: bool, // feel free to add `pub` when needed
+    }
+}
+use trait_variable_macros::trait_var;
+#[trait_var]
+struct MyStruct {
+    a: i32,
+    pub b: bool,
+}
+
 impl MyTrait for MyStruct {
     fn print2(&self) {
         // println!("{}", self.get_fields().x);
@@ -230,15 +246,6 @@ impl MyTrait for MyStruct {
     }
 }
 
-trait_enhance! {
-    #[trait_enhance(MyTrait)] // put this at the top of the struct
-    #[derive(Default)] // feel free to use any derive macro you want
-    struct MyStruct { // feel free to add `pub` when needed
-        // feel free to add any fields as usual or leave it empty
-        a: i32,
-        pub b: bool, // feel free to add `pub` when needed
-    }
-}
 
 pub fn test() {
     // let my_struct = MyStruct2 { a: 2, b: true };
