@@ -161,7 +161,8 @@ macro_rules! trait_enhance {
     };
     // Forward struct definition to generated macro next to the trait:
     (
-        #[trait_enhance($trait:path)]
+        // #[trait_enhance($trait:path)]
+        ($trait:path)
         $(#[$attr:meta])*
         $vis:vis struct $struct_name:ident {
             $(
@@ -231,7 +232,8 @@ impl MyTrait for MyStruct {
 }
 
 trait_enhance! {
-    #[trait_enhance(MyTrait)] // put this at the top of the struct
+    (MyTrait) // put this at the top of the struct
+    // #[trait_enhance(MyTrait)] // put this at the top of the struct
     #[derive(Default)] // feel free to use any derive macro you want
     struct MyStruct { // feel free to add `pub` when needed
         // feel free to add any fields as usual or leave it empty
