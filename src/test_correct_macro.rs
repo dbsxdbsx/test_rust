@@ -159,7 +159,7 @@ macro_rules! trait_enhance {
             $vis use __temp_macro_name as $trait_name;
         }
     };
-    // Forward struct definition to generated macro next to the trait:
+    // entry point for parsing a struct: Forward struct definition to generated macro next to the trait:
     (
         // #[trait_enhance($trait:path)]
         ($trait:path)
