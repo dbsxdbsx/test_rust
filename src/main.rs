@@ -18,6 +18,7 @@ mod test_my_macro;
 #[trait_var(MyTrait)]
 pub struct MyStruct {
     a: i32,
+    s: String,
 }
 // way2: use declarative macro for struct
 // MyTrait_for_struct! {
@@ -28,8 +29,19 @@ pub struct MyStruct {
 //     }
 // }
 
+fn test_x(x: &i32) {}
+fn test_y(y: &mut bool) {}
+
 impl MyStruct {
-    pub fn print_a(&self) {
+    pub fn print_a(&mut self) {
+        self.s = if self.s ==""{ "h".into()} else{"w".into()};
+        self.x = if *self._x() > 0 { -self.x } else { self.x }; // TODO:
+
+        // test(&self.x, &mut self.y);
+        test_x(&self.x);
+        test_x(self._x());
+        test_y(&mut self.y);
+        test_y(self._y_mut());
         println!("a: `{}`", self.a);
     }
     pub fn test(&mut self) {
