@@ -1,4 +1,5 @@
 use quote::ToTokens;
+use regex::Regex;
 use syn::{parse_file, Item, Type};
 
 fn filter_type_content(raw_rust_file: &str, types_names: &[&str]) -> String {
@@ -111,4 +112,74 @@ mod tests {
         println!("Actual output: {}", actual_output);
         assert_eq!(actual_output.trim(), expected_output.trim());
     }
+}
+
+
+
+/// 根据匹配模式调整`input`字符串中的内容，并根据`deref`参数决定是否进行解引用转换
+///
+/// 当遇到`&mut self.x`模式时，转换为`&mut self._x_mut()`，如果`deref`为`true`，则进一步转换为`&mut (*self._x_mut())`；
+/// 当遇到`& self.x`模式时，转换为`& self._x()`，如果`deref`为`true`，则进一步转换为`& (*self._x())`；
+/// 当遇到`self.x`模式时，转换为`self._x()`，如果`deref`为`true`，则进一步转换为`(*self._x())`。
+/// 不会匹配已经是函数调用的`self.x()`形式。
+///
+/// # 参数
+///
+/// * `input` - 待处理的字符串
+/// * `deref` - 是否进行解引用转换
+///
+/// # 返回值
+///
+/// 返回处理后的字符串
+pub fn adjust_self_pattern(input: &str, deref: bool) -> String {
+    let re = Regex::new(r"(&\s*mut\s+self\.)([a-zA-Z_]\w*)|(&\s*self\.)([a-zA-Z_]\w*)|(self\.)([a-zA-Z_]\w*)").unwrap();
+    let mut result = String::new();
+    let mut last_end = 0;
+    for cap in re.captures_iter(input) {
+        let match_start = cap.get(0).unwrap().start();
+        let match_end = cap.get(0).unwrap().end();
+        // 如果匹配后紧跟`(`，则不进行替换
+        if input[match_end..].starts_with('(') {
+            continue;
+        }
+        // 将上一个匹配结束到当前匹配开始之间的文本追加到结果中
+        result.push_str(&input[last_end..match_start]);
+        match (cap.get(1), cap.get(3), cap.get(5)) {
+            (Some(_), _, _) => {
+                // 匹配到 &mut self.x
+                let name = &cap[2];
+                let replacement = if deref {
+                    format!("&mut (*self._{}_mut())", name)
+                } else {
+                    format!("&mut self._{}_mut()", name)
+                };
+                result.push_str(&replacement);
+            },
+            (_, Some(_), _) => {
+                // 匹配到 & self.x
+                let name = &cap[4];
+                let replacement = if deref {
+                    format!("&(*self._{}())", name)
+                } else {
+                    format!("&self._{}()", name)
+                };
+                result.push_str(&replacement);
+            },
+            (_, _, Some(_)) => {
+                // 匹配到 self.x
+                let name = &cap[6];
+                let replacement = if deref {
+                    format!("(*self._{}())", name)
+                } else {
+                    format!("self._{}()", name)
+                };
+                result.push_str(&replacement);
+            },
+            _ => unreachable!(),
+        }
+        last_end = match_end;
+    }
+    // 将最后一个匹配结束到字符串末尾之间的文本追加到结果中
+    result.push_str(&input[last_end..]);
+    result
 }
