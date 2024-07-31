@@ -5,7 +5,14 @@ use std::io::prelude::*;
 use std::io::BufReader;
 
 pub fn test() {
-    let command = cmd!(r"C:\Windows\System32\cmd.exe", "/C", "ping -t 127.0.0.1").stdout_capture();
+    let command = cmd!(
+        r"C:\Windows\System32\cmd.exe",
+        "/C",
+        "python ./test_error.py"
+    )
+    // let command = cmd!(r"C:\Windows\System32\cmd.exe", "/C", "ping -t 127.0.0.1")
+    .stdout_capture()
+    .stderr_to_stdout();
     let output = command.reader().unwrap();
 
     // 使用GB18030解码器包装输出

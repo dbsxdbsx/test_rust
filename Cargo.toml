@@ -60,8 +60,9 @@
 
     # meilisearch-sdk="0.24.3"
 
-    # tokio  ={version="1", features=["full"]}
+    tokio={version="1", features=["full"]}
     # futures="*"
+    futures-util="0.3.30"
 
     # # TODO: build failed
     # # gstreamer       ="0.22"
@@ -70,7 +71,7 @@
 
     # # gstreamer-pbutils = "0.19"
 
-    # reqwest={version="0.11", features=["json", "blocking"]}
+    reqwest={version="0.11", features=["json", "blocking"]}
     # base64 ="0.13"
 
     # m3u_parser="*"
@@ -88,7 +89,7 @@
     # # syn        ={version="1.0.82", features=["full"]}
     # syn  ={version="2.0.26", features=["full", "extra-traits"]}
     # quote="1.0.10"
-    # regex="*"
+    regex="*"
 
     # #
     # enum_dispatch="0.3.12"
@@ -100,3 +101,8 @@
 
     encoding_rs   ="0.8"
     encoding_rs_io="0.1"
+
+    public-ip-address="0.3.2"
+    dns-lookup       ="1.0.8"
+    url              ="2.3.1"
+    public-ip        ={version="0.2", features=["http-resolver"]}
