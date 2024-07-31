@@ -1593,6 +1593,7 @@ dependencies = [
 name = "test_rust"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "command_runner",
  "dns-lookup",
  "duct",
