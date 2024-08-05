@@ -39,7 +39,7 @@
     # # mnist = {version = "0.5.0",features = ["download"]}
     # ndarray ="*"
     # nalgebra="*"
-    anyhow  ="1"
+    anyhow="1"
 
     # image     ="0.24.6"
     # show-image={version="*", features=["image"]}
@@ -106,3 +106,5 @@
     dns-lookup       ="1.0.8"
     url              ="2.3.1"
     public-ip        ={version="0.2", features=["http-resolver"]}
+
+    ctrlc="3.4.4"
