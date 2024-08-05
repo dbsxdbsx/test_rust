@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use regex::Regex;
 use reqwest::Client;
 use serde_json::Value;
@@ -21,17 +21,21 @@ impl fmt::Display for IpInfo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{}, 国家: {}, 地区: {}, 城市: {}, 延时: {:?}, 测试链接: {}",
-            self.ip, self.country, self.region, self.city, self.latency, self.url
+            "测试链接{}：\n公网IP:{}, 国家: {}, 地区: {}, 城市: {}, 延时: {:?}",
+            self.url, self.ip, self.country, self.region, self.city, self.latency,
         )
     }
 }
 
 impl IpInfo {
     async fn new(ip_url: &str) -> Result<Self> {
-        let (ip, latency) = Self::fetch_ip_info(ip_url).await?;
+        let (ip, latency) = Self::fetch_ip_info(ip_url)
+            .await
+            .with_context(|| format!("从{}获取IP信息失败", ip_url))?;
         let url = ip_url.to_string();
-        let mut ip_info = Self::new_with_complete_ip_info(ip, latency).await?;
+        let mut ip_info = Self::new_with_complete_ip_info(ip, latency)
+            .await
+            .with_context(|| format!("获取{}的详细信息失败", ip))?;
         ip_info.url = url;
         Ok(ip_info)
     }
@@ -52,8 +56,11 @@ impl IpInfo {
             Err(_) => return Err(anyhow!("获取响应文本超时({secs}秒)，请检查网络连接")),
         };
 
-        let ip_str = Self::extract_ip_from_fetched_content(&response_text)?;
-        let ip: IpAddr = ip_str.parse().map_err(|_| anyhow!("解析IP地址失败"))?;
+        let ip_str = Self::extract_ip_from_fetched_content(&response_text)
+            .with_context(|| format!("从{}的响应中提取IP地址失败", url))?;
+        let ip: IpAddr = ip_str
+            .parse()
+            .with_context(|| format!("解析IP地址{}失败", ip_str))?;
 
         Ok((ip, latency))
     }
@@ -95,9 +102,9 @@ pub async fn test() -> Result<()> {
     for ip_url in ip_urls {
         match IpInfo::new(ip_url).await {
             Ok(info) => {
-                println!("IP信息: {}", info);
+                println!("{}", info);
             }
-            Err(e) => println!("无法获取公网IP: {}", e),
+            Err(e) => println!("错误: {}", e),
         }
     }
 
