@@ -15,30 +15,35 @@ use winapi::um::winnt::{
 pub static COMMAND_RUNNER: Lazy<Mutex<CommandRunner>> =
     Lazy::new(|| Mutex::new(CommandRunner::new().unwrap()));
 
-struct JobHandle(Arc<HANDLE>);
+// 安全的 HANDLE 包装器
+struct SafeHandle(HANDLE);
 
-impl Drop for JobHandle {
+unsafe impl Send for SafeHandle {}
+unsafe impl Sync for SafeHandle {}
+
+impl Drop for SafeHandle {
     fn drop(&mut self) {
         unsafe {
-            CloseHandle(*Arc::as_ptr(&self.0));
+            if !self.0.is_null() {
+                CloseHandle(self.0);
+            }
         }
     }
 }
 
+struct JobHandle(Arc<SafeHandle>);
+
 pub struct CommandRunner {
     job: JobHandle,
-    children: Arc<Mutex<Vec<Child>>>,
+    tasks: Arc<Mutex<Vec<Child>>>,
 }
-
-unsafe impl Send for CommandRunner {}
-unsafe impl Sync for CommandRunner {}
 
 impl CommandRunner {
     pub fn new() -> Result<Self> {
         let job = Self::create_job_and_assign_current_process()?;
         Ok(CommandRunner {
             job,
-            children: Arc::new(Mutex::new(Vec::new())),
+            tasks: Arc::new(Mutex::new(Vec::new())),
         })
     }
 
@@ -69,12 +74,20 @@ impl CommandRunner {
                 return Err(anyhow!("将当前进程分配到作业失败"));
             }
 
-            Ok(JobHandle(Arc::new(job)))
+            Ok(JobHandle(Arc::new(SafeHandle(job))))
         }
     }
 
-    pub fn spawn(&self, command: &str, args: &[&str]) -> Result<u32> {
-        let child = Command::new(command).args(args).spawn()?;
+    pub fn spawn(&self, command: &str) -> Result<u32> {
+        let parts: Vec<&str> = command.split_whitespace().map(|part| part.trim()).collect();
+        let (cmd_root, cmd_args) = if parts.len() > 1 {
+            (parts[0], &parts[1..])
+        } else {
+            (parts[0], &[][..])
+        };
+        let mut command = Command::new(cmd_root);
+        command.args(cmd_args);
+        let child = command.spawn()?;
 
         let child_id = child.id();
 
@@ -83,39 +96,101 @@ impl CommandRunner {
             if process.is_null() {
                 return Err(anyhow!("Failed to open child process"));
             }
-            AssignProcessToJobObject(*Arc::as_ptr(&self.job.0), process);
+            AssignProcessToJobObject(self.job.0 .0, process);
             CloseHandle(process);
         }
 
-        self.children.lock().push(child);
+        self.tasks.lock().push(child);
 
         Ok(child_id)
     }
 
-    fn kill_children(&self) {
-        let mut children = self.children.lock();
-        for child in children.iter_mut() {
+    fn kill_tasks(&self) {
+        let mut tasks = self.tasks.lock();
+        for child in tasks.iter_mut() {
             if let Err(e) = child.kill() {
                 eprintln!("终止子进程时出错: {}", e);
             }
         }
-        children.clear();
+        tasks.clear();
         println!("所有子进程已终止");
     }
 
     pub fn stop(&self) -> Result<()> {
-        self.kill_children();
+        self.kill_tasks();
         Ok(())
     }
 
-    pub fn task_number(&self) -> usize {
-        self.children.lock().len()
+    pub fn tasks_number(&self) -> usize {
+        self.tasks.lock().len()
+    }
+
+    fn check_task_status(&self, pid: u32) -> Option<Result<bool, std::io::Error>> {
+        let mut tasks = self.tasks.lock();
+        tasks
+            .iter_mut()
+            .find(|child| child.id() == pid)
+            .map(|child| child.try_wait().map(|status| status.is_none()))
+    }
+
+    pub fn is_task_running(&self, pid: u32) -> bool {
+        match self.check_task_status(pid) {
+            Some(Ok(running)) => running,
+            _ => false,
+        }
+    }
+
+    pub fn get_running_tasks_pids(&self) -> Vec<u32> {
+        let tasks = self.tasks.lock();
+        tasks
+            .iter()
+            .filter_map(|child| {
+                let pid = child.id();
+                // NOTE: no need to check the result of `check_task_status` here
+                // since all tasks in `tasks` should be running tasks
+                Some(pid)
+            })
+            .collect()
     }
 }
 
 impl Drop for CommandRunner {
     fn drop(&mut self) {
         println!("CommandRunner 正在清理资源...");
-        self.kill_children();
+        self.kill_tasks();
     }
+}
+
+pub fn test(app_last_secs: u64) -> Result<()> {
+    let command_runner = COMMAND_RUNNER.lock();
+    let child_pid = command_runner.spawn("./sing-box.exe run -c ./config.json")?;
+    let child_pid2 = command_runner.spawn("ping -t 127.0.0.1")?;
+
+    println!("Child process ID1: {}", child_pid);
+    println!("Child process ID2: {}", child_pid2);
+    println!("Current running tasks: {}", command_runner.tasks_number());
+
+    // 检查进程状态
+    for _ in 0..5 {
+        std::thread::sleep(std::time::Duration::from_secs(1));
+        println!(
+            "Process 1({child_pid}) is running: {}",
+            command_runner.is_task_running(child_pid)
+        );
+        println!(
+            "Process 2({child_pid2})  is running: {}",
+            command_runner.is_task_running(child_pid2)
+        );
+
+        println!(
+            "Running processes: {:?}",
+            command_runner.get_running_tasks_pids()
+        );
+    }
+
+    std::thread::sleep(std::time::Duration::from_secs(app_last_secs - 5)); // 减去上面的5秒
+    command_runner.stop()?;
+    println!("程序正常退出");
+
+    Ok(())
 }
