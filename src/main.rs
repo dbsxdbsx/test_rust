@@ -1,7 +1,6 @@
-mod test_windows_command_runner;
-use anyhow::Result;
+mod com;
 
-fn main() -> Result<()> {
-    test_windows_command_runner::test(7)?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    com::test()?;
     Ok(())
 }

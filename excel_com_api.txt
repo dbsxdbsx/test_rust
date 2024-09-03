@@ -1,0 +1,483 @@
+## 方法
+1: fn QueryInterface(param0: CArray, param1: CArray) -> CArray
+2: fn AddRef() -> CArray
+3: fn Release() -> CArray
+4: fn GetTypeInfoCount(param0: CArray) -> CArray
+5: fn GetTypeInfo(param0: CArray, param1: CArray, param2: CArray) -> CArray
+6: fn GetIDsOfNames(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray) -> CArray
+7: fn Invoke(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray) -> CArray
+8: fn Application() -> CArray
+9: fn Creator() -> CArray
+10: fn Parent() -> CArray
+11: fn ActiveCell() -> CArray
+12: fn ActiveChart() -> CArray
+13: fn ActiveDialog() -> CArray
+14: fn ActiveMenuBar() -> CArray
+15: fn ActivePrinter() -> CArray
+16: fn ActivePrinter(param0: CArray) -> CArray
+17: fn ActiveSheet() -> CArray
+18: fn ActiveWindow() -> CArray
+19: fn ActiveWorkbook() -> CArray
+20: fn AddIns() -> CArray
+21: fn Assistant() -> CArray
+22: fn Calculate() -> CArray
+23: fn Cells() -> CArray
+24: fn Charts() -> CArray
+25: fn Columns() -> CArray
+26: fn CommandBars() -> CArray
+27: fn DDEAppReturnCode() -> CArray
+28: fn DDEExecute(param0: CArray, param1: CArray) -> CArray
+29: fn DDEInitiate(param0: CArray, param1: CArray) -> CArray
+30: fn DDEPoke(param0: CArray, param1: CArray, param2: CArray) -> CArray
+31: fn DDERequest(param0: CArray, param1: CArray) -> CArray
+32: fn DDETerminate(param0: CArray) -> CArray
+33: fn DialogSheets() -> CArray
+34: fn Evaluate(param0: CArray) -> CArray
+35: fn _Evaluate(param0: CArray) -> CArray
+36: fn ExecuteExcel4Macro(param0: CArray) -> CArray
+37: fn Intersect(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray, param13: CArray, param14: CArray, param15: CArray, param16: CArray, param17: CArray, param18: CArray, param19: CArray, param20: CArray, param21: CArray, param22: CArray, param23: CArray, param24: CArray, param25: CArray, param26: CArray, param27: CArray, param28: CArray, param29: CArray) -> CArray
+38: fn MenuBars() -> CArray
+39: fn Modules() -> CArray
+40: fn Names() -> CArray
+41: fn Range(param0: CArray, param1: CArray) -> CArray
+42: fn Rows() -> CArray
+43: fn Run(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray, param13: CArray, param14:
+CArray, param15: CArray, param16: CArray, param17: CArray, param18: CArray, param19: CArray, param20: CArray, param21: CArray, param22: CArray, param23: CArray, param24: CArray, param25: CArray, param26: CArray, param27: CArray, param28: CArray, param29: CArray, param30: CArray) -> CArray
+44: fn _Run2(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray, param13: CArray, param14: CArray, param15: CArray, param16: CArray, param17: CArray, param18: CArray, param19: CArray, param20: CArray, param21: CArray, param22: CArray, param23: CArray, param24: CArray, param25: CArray, param26: CArray, param27: CArray, param28: CArray,
+param29: CArray, param30: CArray) -> CArray
+45: fn Selection() -> CArray
+46: fn SendKeys(param0: CArray, param1: CArray) -> CArray
+47: fn Sheets() -> CArray
+48: fn ShortcutMenus(param0: CArray) -> CArray
+49: fn ThisWorkbook() -> CArray
+50: fn Toolbars() -> CArray
+51: fn Union(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray, param13: CArray, param14: CArray, param15: CArray, param16: CArray, param17: CArray, param18: CArray, param19: CArray, param20: CArray, param21: CArray, param22: CArray, param23: CArray, param24: CArray, param25: CArray, param26: CArray, param27: CArray, param28: CArray,
+param29: CArray) -> CArray
+52: fn Windows() -> CArray
+53: fn Workbooks() -> CArray
+54: fn WorksheetFunction() -> CArray
+55: fn Worksheets() -> CArray
+56: fn Excel4IntlMacroSheets() -> CArray
+57: fn Excel4MacroSheets() -> CArray
+58: fn ActivateMicrosoftApp(param0: CArray) -> CArray
+59: fn AddChartAutoFormat(param0: CArray, param1: CArray, param2: CArray) -> CArray
+60: fn AddCustomList(param0: CArray, param1: CArray) -> CArray
+61: fn AlertBeforeOverwriting() -> CArray
+62: fn AlertBeforeOverwriting(param0: CArray) -> CArray
+63: fn AltStartupPath() -> CArray
+64: fn AltStartupPath(param0: CArray) -> CArray
+65: fn AskToUpdateLinks() -> CArray
+66: fn AskToUpdateLinks(param0: CArray) -> CArray
+67: fn EnableAnimations() -> CArray
+68: fn EnableAnimations(param0: CArray) -> CArray
+69: fn AutoCorrect() -> CArray
+70: fn Build() -> CArray
+71: fn CalculateBeforeSave() -> CArray
+72: fn CalculateBeforeSave(param0: CArray) -> CArray
+73: fn Calculation() -> CArray
+74: fn Calculation(param0: CArray) -> CArray
+75: fn Caller(param0: CArray) -> CArray
+76: fn CanPlaySounds() -> CArray
+77: fn CanRecordSounds() -> CArray
+78: fn Caption() -> CArray
+79: fn Caption(param0: CArray) -> CArray
+80: fn CellDragAndDrop() -> CArray
+81: fn CellDragAndDrop(param0: CArray) -> CArray
+82: fn CentimetersToPoints(param0: CArray) -> CArray
+83: fn CheckSpelling(param0: CArray, param1: CArray, param2: CArray) -> CArray
+84: fn ClipboardFormats(param0: CArray) -> CArray
+85: fn DisplayClipboardWindow() -> CArray
+86: fn DisplayClipboardWindow(param0: CArray) -> CArray
+87: fn ColorButtons() -> CArray
+88: fn ColorButtons(param0: CArray) -> CArray
+89: fn CommandUnderlines() -> CArray
+90: fn CommandUnderlines(param0: CArray) -> CArray
+91: fn ConstrainNumeric() -> CArray
+92: fn ConstrainNumeric(param0: CArray) -> CArray
+93: fn ConvertFormula(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray) -> CArray
+94: fn CopyObjectsWithCells() -> CArray
+95: fn CopyObjectsWithCells(param0: CArray) -> CArray
+96: fn Cursor() -> CArray
+97: fn Cursor(param0: CArray) -> CArray
+98: fn CustomListCount() -> CArray
+99: fn CutCopyMode() -> CArray
+100: fn CutCopyMode(param0: CArray) -> CArray
+101: fn DataEntryMode() -> CArray
+102: fn DataEntryMode(param0: CArray) -> CArray
+103: fn Dummy1(param0: CArray, param1: CArray, param2: CArray, param3: CArray) -> CArray
+104: fn Dummy2(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray) -> CArray
+105: fn Dummy3() -> CArray
+106: fn Dummy4(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray, param13: CArray, param14: CArray) -> CArray
+107: fn Dummy5(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray) -> CArray
+108: fn Dummy6() -> CArray
+109: fn Dummy7() -> CArray
+110: fn Dummy8(param0: CArray) -> CArray
+111: fn Dummy9() -> CArray
+112: fn Dummy10(param0: CArray) -> CArray
+113: fn Dummy11() -> CArray
+114: fn _Default() -> CArray
+115: fn DefaultFilePath() -> CArray
+116: fn DefaultFilePath(param0: CArray) -> CArray
+117: fn DeleteChartAutoFormat(param0: CArray) -> CArray
+118: fn DeleteCustomList(param0: CArray) -> CArray
+119: fn Dialogs() -> CArray
+120: fn DisplayAlerts() -> CArray
+121: fn DisplayAlerts(param0: CArray) -> CArray
+122: fn DisplayFormulaBar() -> CArray
+123: fn DisplayFormulaBar(param0: CArray) -> CArray
+124: fn DisplayFullScreen() -> CArray
+125: fn DisplayFullScreen(param0: CArray) -> CArray
+126: fn DisplayNoteIndicator() -> CArray
+127: fn DisplayNoteIndicator(param0: CArray) -> CArray
+128: fn DisplayCommentIndicator() -> CArray
+129: fn DisplayCommentIndicator(param0: CArray) -> CArray
+130: fn DisplayExcel4Menus() -> CArray
+131: fn DisplayExcel4Menus(param0: CArray) -> CArray
+132: fn DisplayRecentFiles() -> CArray
+133: fn DisplayRecentFiles(param0: CArray) -> CArray
+134: fn DisplayScrollBars() -> CArray
+135: fn DisplayScrollBars(param0: CArray) -> CArray
+136: fn DisplayStatusBar() -> CArray
+137: fn DisplayStatusBar(param0: CArray) -> CArray
+138: fn DoubleClick() -> CArray
+139: fn EditDirectlyInCell() -> CArray
+140: fn EditDirectlyInCell(param0: CArray) -> CArray
+141: fn EnableAutoComplete() -> CArray
+142: fn EnableAutoComplete(param0: CArray) -> CArray
+143: fn EnableCancelKey() -> CArray
+144: fn EnableCancelKey(param0: CArray) -> CArray
+145: fn EnableSound() -> CArray
+146: fn EnableSound(param0: CArray) -> CArray
+147: fn EnableTipWizard() -> CArray
+148: fn EnableTipWizard(param0: CArray) -> CArray
+149: fn FileConverters(param0: CArray, param1: CArray) -> CArray
+150: fn FileSearch() -> CArray
+151: fn FileFind() -> CArray
+152: fn _FindFile() -> CArray
+153: fn FixedDecimal() -> CArray
+154: fn FixedDecimal(param0: CArray) -> CArray
+155: fn FixedDecimalPlaces() -> CArray
+156: fn FixedDecimalPlaces(param0: CArray) -> CArray
+157: fn GetCustomListContents(param0: CArray) -> CArray
+158: fn GetCustomListNum(param0: CArray) -> CArray
+159: fn GetOpenFilename(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray) -> CArray
+160: fn GetSaveAsFilename(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray) -> CArray
+161: fn Goto(param0: CArray, param1: CArray) -> CArray
+162: fn Height() -> CArray
+163: fn Height(param0: CArray) -> CArray
+164: fn Help(param0: CArray, param1: CArray) -> CArray
+165: fn IgnoreRemoteRequests() -> CArray
+166: fn IgnoreRemoteRequests(param0: CArray) -> CArray
+167: fn InchesToPoints(param0: CArray) -> CArray
+168: fn InputBox(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray) -> CArray
+169: fn Interactive() -> CArray
+170: fn Interactive(param0: CArray) -> CArray
+171: fn International(param0: CArray) -> CArray
+172: fn Iteration() -> CArray
+173: fn Iteration(param0: CArray) -> CArray
+174: fn LargeButtons() -> CArray
+175: fn LargeButtons(param0: CArray) -> CArray
+176: fn Left() -> CArray
+177: fn Left(param0: CArray) -> CArray
+178: fn LibraryPath() -> CArray
+179: fn _MacroOptions(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray) -> CArray
+180: fn MailLogoff() -> CArray
+181: fn MailLogon(param0: CArray, param1: CArray, param2: CArray) -> CArray
+182: fn MailSession() -> CArray
+183: fn MailSystem() -> CArray
+184: fn MathCoprocessorAvailable() -> CArray
+185: fn MaxChange() -> CArray
+186: fn MaxChange(param0: CArray) -> CArray
+187: fn MaxIterations() -> CArray
+188: fn MaxIterations(param0: CArray) -> CArray
+189: fn MemoryFree() -> CArray
+190: fn MemoryTotal() -> CArray
+191: fn MemoryUsed() -> CArray
+192: fn MouseAvailable() -> CArray
+193: fn MoveAfterReturn() -> CArray
+194: fn MoveAfterReturn(param0: CArray) -> CArray
+195: fn MoveAfterReturnDirection() -> CArray
+196: fn MoveAfterReturnDirection(param0: CArray) -> CArray
+197: fn RecentFiles() -> CArray
+198: fn Name() -> CArray
+199: fn NextLetter() -> CArray
+200: fn NetworkTemplatesPath() -> CArray
+201: fn ODBCErrors() -> CArray
+202: fn ODBCTimeout() -> CArray
+203: fn ODBCTimeout(param0: CArray) -> CArray
+204: fn OnCalculate() -> CArray
+205: fn OnCalculate(param0: CArray) -> CArray
+206: fn OnData() -> CArray
+207: fn OnData(param0: CArray) -> CArray
+208: fn OnDoubleClick() -> CArray
+209: fn OnDoubleClick(param0: CArray) -> CArray
+210: fn OnEntry() -> CArray
+211: fn OnEntry(param0: CArray) -> CArray
+212: fn OnKey(param0: CArray, param1: CArray) -> CArray
+213: fn OnRepeat(param0: CArray, param1: CArray) -> CArray
+214: fn OnSheetActivate() -> CArray
+215: fn OnSheetActivate(param0: CArray) -> CArray
+216: fn OnSheetDeactivate() -> CArray
+217: fn OnSheetDeactivate(param0: CArray) -> CArray
+218: fn OnTime(param0: CArray, param1: CArray, param2: CArray, param3: CArray) -> CArray
+219: fn OnUndo(param0: CArray, param1: CArray) -> CArray
+220: fn OnWindow() -> CArray
+221: fn OnWindow(param0: CArray) -> CArray
+222: fn OperatingSystem() -> CArray
+223: fn OrganizationName() -> CArray
+224: fn Path() -> CArray
+225: fn PathSeparator() -> CArray
+226: fn PreviousSelections(param0: CArray) -> CArray
+227: fn PivotTableSelection() -> CArray
+228: fn PivotTableSelection(param0: CArray) -> CArray
+229: fn PromptForSummaryInfo() -> CArray
+230: fn PromptForSummaryInfo(param0: CArray) -> CArray
+231: fn Quit() -> CArray
+232: fn RecordMacro(param0: CArray, param1: CArray) -> CArray
+233: fn RecordRelative() -> CArray
+234: fn ReferenceStyle() -> CArray
+235: fn ReferenceStyle(param0: CArray) -> CArray
+236: fn RegisteredFunctions(param0: CArray, param1: CArray) -> CArray
+237: fn RegisterXLL(param0: CArray) -> CArray
+238: fn Repeat() -> CArray
+239: fn ResetTipWizard() -> CArray
+240: fn RollZoom() -> CArray
+241: fn RollZoom(param0: CArray) -> CArray
+242: fn Save(param0: CArray) -> CArray
+243: fn SaveWorkspace(param0: CArray) -> CArray
+244: fn ScreenUpdating() -> CArray
+245: fn ScreenUpdating(param0: CArray) -> CArray
+246: fn SetDefaultChart(param0: CArray, param1: CArray) -> CArray
+247: fn SheetsInNewWorkbook() -> CArray
+248: fn SheetsInNewWorkbook(param0: CArray) -> CArray
+249: fn ShowChartTipNames() -> CArray
+250: fn ShowChartTipNames(param0: CArray) -> CArray
+251: fn ShowChartTipValues() -> CArray
+252: fn ShowChartTipValues(param0: CArray) -> CArray
+253: fn StandardFont() -> CArray
+254: fn StandardFont(param0: CArray) -> CArray
+255: fn StandardFontSize() -> CArray
+256: fn StandardFontSize(param0: CArray) -> CArray
+257: fn StartupPath() -> CArray
+258: fn StatusBar() -> CArray
+259: fn StatusBar(param0: CArray) -> CArray
+260: fn TemplatesPath() -> CArray
+261: fn ShowToolTips() -> CArray
+262: fn ShowToolTips(param0: CArray) -> CArray
+263: fn Top() -> CArray
+264: fn Top(param0: CArray) -> CArray
+265: fn DefaultSaveFormat() -> CArray
+266: fn DefaultSaveFormat(param0: CArray) -> CArray
+267: fn TransitionMenuKey() -> CArray
+268: fn TransitionMenuKey(param0: CArray) -> CArray
+269: fn TransitionMenuKeyAction() -> CArray
+270: fn TransitionMenuKeyAction(param0: CArray) -> CArray
+271: fn TransitionNavigKeys() -> CArray
+272: fn TransitionNavigKeys(param0: CArray) -> CArray
+273: fn Undo() -> CArray
+274: fn UsableHeight() -> CArray
+275: fn UsableWidth() -> CArray
+276: fn UserControl() -> CArray
+277: fn UserControl(param0: CArray) -> CArray
+278: fn UserName() -> CArray
+279: fn UserName(param0: CArray) -> CArray
+280: fn Value() -> CArray
+281: fn VBE() -> CArray
+282: fn Version() -> CArray
+283: fn Visible() -> CArray
+284: fn Visible(param0: CArray) -> CArray
+285: fn Volatile(param0: CArray) -> CArray
+286: fn _Wait(param0: CArray) -> CArray
+287: fn Width() -> CArray
+288: fn Width(param0: CArray) -> CArray
+289: fn WindowsForPens() -> CArray
+290: fn WindowState() -> CArray
+291: fn WindowState(param0: CArray) -> CArray
+292: fn UILanguage() -> CArray
+293: fn UILanguage(param0: CArray) -> CArray
+294: fn DefaultSheetDirection() -> CArray
+295: fn DefaultSheetDirection(param0: CArray) -> CArray
+296: fn CursorMovement() -> CArray
+297: fn CursorMovement(param0: CArray) -> CArray
+298: fn ControlCharacters() -> CArray
+299: fn ControlCharacters(param0: CArray) -> CArray
+300: fn _WSFunction(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6:
+CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray, param13: CArray,
+param14: CArray, param15: CArray, param16: CArray, param17: CArray, param18: CArray, param19: CArray, param20: CArray, param21: CArray, param22: CArray, param23: CArray, param24: CArray, param25: CArray, param26: CArray, param27: CArray, param28: CArray, param29: CArray) -> CArray
+301: fn EnableEvents() -> CArray
+302: fn EnableEvents(param0: CArray) -> CArray
+303: fn DisplayInfoWindow() -> CArray
+304: fn DisplayInfoWindow(param0: CArray) -> CArray
+305: fn Wait(param0: CArray) -> CArray
+306: fn ExtendList() -> CArray
+307: fn ExtendList(param0: CArray) -> CArray
+308: fn OLEDBErrors() -> CArray
+309: fn GetPhonetic(param0: CArray) -> CArray
+310: fn COMAddIns() -> CArray
+311: fn DefaultWebOptions() -> CArray
+312: fn ProductCode() -> CArray
+313: fn UserLibraryPath() -> CArray
+314: fn AutoPercentEntry() -> CArray
+315: fn AutoPercentEntry(param0: CArray) -> CArray
+316: fn LanguageSettings() -> CArray
+317: fn Dummy101() -> CArray
+318: fn Dummy12(param0: CArray, param1: CArray) -> CArray
+319: fn AnswerWizard() -> CArray
+320: fn CalculateFull() -> CArray
+321: fn FindFile() -> CArray
+322: fn CalculationVersion() -> CArray
+323: fn ShowWindowsInTaskbar() -> CArray
+324: fn ShowWindowsInTaskbar(param0: CArray) -> CArray
+325: fn FeatureInstall() -> CArray
+326: fn FeatureInstall(param0: CArray) -> CArray
+327: fn Ready() -> CArray
+328: fn Dummy13(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray, param11: CArray, param12: CArray, param13: CArray, param14: CArray, param15: CArray, param16: CArray, param17: CArray, param18: CArray, param19: CArray, param20: CArray, param21:
+CArray, param22: CArray, param23: CArray, param24: CArray, param25: CArray, param26: CArray, param27: CArray, param28: CArray, param29: CArray) -> CArray
+329: fn FindFormat() -> CArray
+330: fn FindFormat(param0: CArray) -> CArray
+331: fn ReplaceFormat() -> CArray
+332: fn ReplaceFormat(param0: CArray) -> CArray
+333: fn UsedObjects() -> CArray
+334: fn CalculationState() -> CArray
+335: fn CalculationInterruptKey() -> CArray
+336: fn CalculationInterruptKey(param0: CArray) -> CArray
+337: fn Watches() -> CArray
+338: fn DisplayFunctionToolTips() -> CArray
+339: fn DisplayFunctionToolTips(param0: CArray) -> CArray
+340: fn AutomationSecurity() -> CArray
+341: fn AutomationSecurity(param0: CArray) -> CArray
+342: fn FileDialog(param0: CArray) -> CArray
+343: fn Dummy14() -> CArray
+344: fn CalculateFullRebuild() -> CArray
+345: fn DisplayPasteOptions() -> CArray
+346: fn DisplayPasteOptions(param0: CArray) -> CArray
+347: fn DisplayInsertOptions() -> CArray
+348: fn DisplayInsertOptions(param0: CArray) -> CArray
+349: fn GenerateGetPivotData() -> CArray
+350: fn GenerateGetPivotData(param0: CArray) -> CArray
+351: fn AutoRecover() -> CArray
+352: fn Hwnd() -> CArray
+353: fn Hinstance() -> CArray
+354: fn CheckAbort(param0: CArray) -> CArray
+355: fn ErrorCheckingOptions() -> CArray
+356: fn AutoFormatAsYouTypeReplaceHyperlinks() -> CArray
+357: fn AutoFormatAsYouTypeReplaceHyperlinks(param0: CArray) -> CArray
+358: fn SmartTagRecognizers() -> CArray
+359: fn NewWorkbook() -> CArray
+360: fn SpellingOptions() -> CArray
+361: fn Speech() -> CArray
+362: fn MapPaperSize() -> CArray
+363: fn MapPaperSize(param0: CArray) -> CArray
+364: fn ShowStartupDialog() -> CArray
+365: fn ShowStartupDialog(param0: CArray) -> CArray
+366: fn DecimalSeparator() -> CArray
+367: fn DecimalSeparator(param0: CArray) -> CArray
+368: fn ThousandsSeparator() -> CArray
+369: fn ThousandsSeparator(param0: CArray) -> CArray
+370: fn UseSystemSeparators() -> CArray
+371: fn UseSystemSeparators(param0: CArray) -> CArray
+372: fn ThisCell() -> CArray
+373: fn RTD() -> CArray
+374: fn DisplayDocumentActionTaskPane() -> CArray
+375: fn DisplayDocumentActionTaskPane(param0: CArray) -> CArray
+376: fn DisplayXMLSourcePane(param0: CArray) -> CArray
+377: fn ArbitraryXMLSupportAvailable() -> CArray
+378: fn Support(param0: CArray, param1: CArray, param2: CArray) -> CArray
+379: fn Dummy20(param0: CArray) -> CArray
+380: fn MeasurementUnit() -> CArray
+381: fn MeasurementUnit(param0: CArray) -> CArray
+382: fn ShowSelectionFloaties() -> CArray
+383: fn ShowSelectionFloaties(param0: CArray) -> CArray
+384: fn ShowMenuFloaties() -> CArray
+385: fn ShowMenuFloaties(param0: CArray) -> CArray
+386: fn ShowDevTools() -> CArray
+387: fn ShowDevTools(param0: CArray) -> CArray
+388: fn EnableLivePreview() -> CArray
+389: fn EnableLivePreview(param0: CArray) -> CArray
+390: fn DisplayDocumentInformationPanel() -> CArray
+391: fn DisplayDocumentInformationPanel(param0: CArray) -> CArray
+392: fn AlwaysUseClearType() -> CArray
+393: fn AlwaysUseClearType(param0: CArray) -> CArray
+394: fn WarnOnFunctionNameConflict() -> CArray
+395: fn WarnOnFunctionNameConflict(param0: CArray) -> CArray
+396: fn FormulaBarHeight() -> CArray
+397: fn FormulaBarHeight(param0: CArray) -> CArray
+398: fn DisplayFormulaAutoComplete() -> CArray
+399: fn DisplayFormulaAutoComplete(param0: CArray) -> CArray
+400: fn GenerateTableRefs() -> CArray
+401: fn GenerateTableRefs(param0: CArray) -> CArray
+402: fn Assistance() -> CArray
+403: fn CalculateUntilAsyncQueriesDone() -> CArray
+404: fn EnableLargeOperationAlert() -> CArray
+405: fn EnableLargeOperationAlert(param0: CArray) -> CArray
+406: fn LargeOperationCellThousandCount() -> CArray
+407: fn LargeOperationCellThousandCount(param0: CArray) -> CArray
+408: fn DeferAsyncQueries() -> CArray
+409: fn DeferAsyncQueries(param0: CArray) -> CArray
+410: fn MultiThreadedCalculation() -> CArray
+411: fn SharePointVersion(param0: CArray) -> CArray
+412: fn ActiveEncryptionSession() -> CArray
+413: fn HighQualityModeForGraphics() -> CArray
+414: fn HighQualityModeForGraphics(param0: CArray) -> CArray
+415: fn FileExportConverters() -> CArray
+416: fn SmartArtLayouts() -> CArray
+417: fn SmartArtQuickStyles() -> CArray
+418: fn SmartArtColors() -> CArray
+419: fn AddIns2() -> CArray
+420: fn PrintCommunication() -> CArray
+421: fn PrintCommunication(param0: CArray) -> CArray
+422: fn MacroOptions(param0: CArray, param1: CArray, param2: CArray, param3: CArray, param4: CArray, param5: CArray, param6: CArray, param7: CArray, param8: CArray, param9: CArray, param10: CArray) -> CArray
+423: fn UseClusterConnector() -> CArray
+424: fn UseClusterConnector(param0: CArray) -> CArray
+425: fn ClusterConnector() -> CArray
+426: fn ClusterConnector(param0: CArray) -> CArray
+427: fn Quitting() -> CArray
+428: fn Dummy22() -> CArray
+429: fn Dummy22(param0: CArray) -> CArray
+430: fn Dummy23() -> CArray
+431: fn Dummy23(param0: CArray) -> CArray
+432: fn ProtectedViewWindows() -> CArray
+433: fn ActiveProtectedViewWindow() -> CArray
+434: fn IsSandboxed() -> CArray
+435: fn SaveISO8601Dates() -> CArray
+436: fn SaveISO8601Dates(param0: CArray) -> CArray
+437: fn HinstancePtr() -> CArray
+438: fn FileValidation() -> CArray
+439: fn FileValidation(param0: CArray) -> CArray
+440: fn FileValidationPivot() -> CArray
+439: fn FileValidation(param0: CArray) -> CArray
+440: fn FileValidationPivot() -> CArray
+441: fn FileValidationPivot(param0: CArray) -> CArray
+442: fn ShowQuickAnalysis() -> CArray
+441: fn FileValidationPivot(param0: CArray) -> CArray
+442: fn ShowQuickAnalysis() -> CArray
+443: fn ShowQuickAnalysis(param0: CArray) -> CArray
+444: fn QuickAnalysis() -> CArray
+445: fn FlashFill() -> CArray
+446: fn FlashFill(param0: CArray) -> CArray
+447: fn EnableMacroAnimations() -> CArray
+448: fn EnableMacroAnimations(param0: CArray) -> CArray
+449: fn ChartDataPointTrack() -> CArray
+450: fn ChartDataPointTrack(param0: CArray) -> CArray
+451: fn FlashFillMode() -> CArray
+452: fn FlashFillMode(param0: CArray) -> CArray
+448: fn EnableMacroAnimations(param0: CArray) -> CArray
+449: fn ChartDataPointTrack() -> CArray
+450: fn ChartDataPointTrack(param0: CArray) -> CArray
+451: fn FlashFillMode() -> CArray
+452: fn FlashFillMode(param0: CArray) -> CArray
+453: fn MergeInstances() -> CArray
+454: fn MergeInstances(param0: CArray) -> CArray
+451: fn FlashFillMode() -> CArray
+452: fn FlashFillMode(param0: CArray) -> CArray
+453: fn MergeInstances() -> CArray
+454: fn MergeInstances(param0: CArray) -> CArray
+455: fn EnableCheckFileExtensions() -> CArray
+453: fn MergeInstances() -> CArray
+454: fn MergeInstances(param0: CArray) -> CArray
+455: fn EnableCheckFileExtensions() -> CArray
+454: fn MergeInstances(param0: CArray) -> CArray
+455: fn EnableCheckFileExtensions() -> CArray
+455: fn EnableCheckFileExtensions() -> CArray
+456: fn EnableCheckFileExtensions(param0: CArray) -> CArray
+457: fn DebugTools() -> CArray
