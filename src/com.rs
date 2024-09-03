@@ -4,6 +4,7 @@ use windows::Win32::System::Com::{
     ITypeInfo, COINIT_MULTITHREADED, DISPATCH_PROPERTYGET, DISPATCH_PROPERTYPUT, DISPPARAMS,
     FUNCDESC, TYPEDESC, VARDESC,
 };
+use windows::Win32::System::Ole::LoadTypeLib;
 use windows::Win32::System::Variant::{
     VT_BOOL, VT_BSTR, VT_CARRAY, VT_CY, VT_DATE, VT_DECIMAL, VT_DISPATCH, VT_EMPTY, VT_ERROR,
     VT_HRESULT, VT_I1, VT_I2, VT_I4, VT_I8, VT_INT, VT_INT_PTR, VT_LPSTR, VT_LPWSTR, VT_NULL,
@@ -18,17 +19,26 @@ use windows::{
     },
 };
 
-fn get_params(func_desc: *const FUNCDESC) -> String {
-    unsafe {
-        let mut params = Vec::new();
-        for i in 0..(*func_desc).cParams {
-            let param = &(*func_desc).lprgelemdescParam.offset(i as isize);
-            // TODO: delete let param_type = get_rust_type(&(*(*param)).tdesc);
-            let param_type = get_rust_type(&(*(*param)).tdesc);
-            params.push(format!("param{i}: {param_type}"));
-        }
-        params.join(", ")
+unsafe fn get_params(func_desc: *const FUNCDESC, type_info: &ITypeInfo) -> String {
+    let param_count = (*func_desc).cParams as usize;
+    let mut params = Vec::with_capacity(param_count);
+    let mut names = vec![BSTR::default(); param_count + 1];
+    let mut pc_names: u32 = 0;
+
+    let _ = type_info.GetNames((*func_desc).memid, names.as_mut_slice(), &mut pc_names);
+
+    for i in 0..param_count {
+        let param = &(*func_desc).lprgelemdescParam.offset(i as isize);
+        let param_type = get_rust_type(&(*(*param)).tdesc);
+        let param_name = if (i + 1) < pc_names as usize {
+            names[i + 1].to_string()
+        } else {
+            format!("param{}", i)
+        };
+        params.push(format!("{}: {}", param_name, param_type));
     }
+
+    params.join(", ")
 }
 
 #[allow(non_snake_case)]
@@ -153,27 +163,23 @@ trait ComObject {
 
     fn get_all_methods_and_fields(&self) -> Result<HashMap<String, i32>> {
         let mut cache = HashMap::new();
-
         unsafe {
             let type_info = self
                 .get_dispatch()
                 .GetTypeInfo(0, 0)
                 .expect("获取类型信息失败");
-
             let type_attr = type_info.GetTypeAttr().expect("获取类型属性失败");
 
             println!("## 方法");
             let mut cnt = 0;
             for i in 0..(*type_attr).cFuncs {
                 let func_desc = type_info.GetFuncDesc(i.into()).expect("获取函数描述失败");
-
-                let (name, doc) = match get_doc(&type_info, DescType::FuncDesc(func_desc)) {
+                let (name, doc, help) = match get_doc(&type_info, DescType::FuncDesc(func_desc)) {
                     Some(value) => value,
                     None => continue,
                 };
-                let params = get_params(func_desc);
+                let params = get_params(func_desc, &type_info);
                 let return_type = get_rust_type(&(*func_desc).elemdescFunc.tdesc);
-
                 cnt += 1;
                 println!(
                     "{cnt}: fn {}({}){} {}",
@@ -184,14 +190,13 @@ trait ComObject {
                     } else {
                         format!(" -> {return_type}")
                     },
-                    if doc.is_empty() {
-                        String::new()
+                    if !doc.is_empty() || !help.is_empty() {
+                        format!("`{}`\n{}", doc, help)
                     } else {
-                        format!("`{doc}`")
+                        String::new()
                     }
                 );
                 cache.insert(name, (*func_desc).memid);
-
                 type_info.ReleaseFuncDesc(func_desc);
             }
 
@@ -199,19 +204,17 @@ trait ComObject {
             cnt = 0;
             for i in 0..(*type_attr).cVars {
                 let var_desc = type_info.GetVarDesc(i.into()).expect("获取变量描述失败");
-
-                let (name, doc) = match get_doc(&type_info, DescType::VarDesc(var_desc)) {
+                let (name, doc, help) = match get_doc(&type_info, DescType::VarDesc(var_desc)) {
                     Some(value) => value,
                     None => continue,
                 };
-
                 cnt += 1;
                 println!(
-                    "{cnt:} {name} {}",
-                    if doc.is_empty() {
-                        String::new()
+                    "{cnt}: {name} {}",
+                    if !doc.is_empty() || !help.is_empty() {
+                        format!("`{}`\n{}", doc, help)
                     } else {
-                        format!("`{doc}`")
+                        String::new()
                     }
                 );
                 cache.insert(name, (*var_desc).memid);
@@ -229,7 +232,7 @@ enum DescType {
     VarDesc(*mut VARDESC),
 }
 
-fn get_doc(type_info: &ITypeInfo, desc: DescType) -> Option<(String, String)> {
+fn get_doc(type_info: &ITypeInfo, desc: DescType) -> Option<(String, String, String)> {
     let memid = match desc {
         DescType::FuncDesc(func_desc) => unsafe { (*func_desc).memid },
         DescType::VarDesc(var_desc) => unsafe { (*var_desc).memid },
@@ -237,14 +240,16 @@ fn get_doc(type_info: &ITypeInfo, desc: DescType) -> Option<(String, String)> {
 
     let mut name_bstr = BSTR::default();
     let mut doc_string_bstr = BSTR::default();
+    let mut help_context = 0u32;
+    let mut help_file_bstr = BSTR::default();
 
     let r = unsafe {
         type_info.GetDocumentation(
             memid,
             Some(&mut name_bstr),
             Some(&mut doc_string_bstr),
-            ptr::null_mut(),
-            None,
+            &mut help_context,
+            Some(&mut help_file_bstr),
         )
     };
 
@@ -252,14 +257,19 @@ fn get_doc(type_info: &ITypeInfo, desc: DescType) -> Option<(String, String)> {
         return None;
     }
 
-    let final_name_bstr = name_bstr.to_string();
-    let final_doc_str = if !doc_string_bstr.is_empty() {
-        doc_string_bstr.to_string()
+    let final_name = name_bstr.to_string();
+    let final_doc = doc_string_bstr.to_string();
+    let final_help = if !help_file_bstr.is_empty() {
+        format!(
+            "Help file: {}, Context: {}",
+            help_file_bstr.to_string(),
+            help_context
+        )
     } else {
         String::new()
     };
 
-    Some((final_name_bstr, final_doc_str))
+    Some((final_name, final_doc, final_help))
 }
 
 struct ExcelApplication {
@@ -302,9 +312,11 @@ impl ComObject for ExcelApplication {
 impl ExcelApplication {
     pub fn new(visible: bool, alert: bool) -> Result<Self> {
         let excel = Self::new_com("Excel.Application")?;
-        excel.set_visible(visible)?;
-        excel.set_alert(alert)?;
+        excel.get_work_books()?;
         excel.get_sheets()?;
+        // excel.set_visible(visible)?;
+        // excel.set_alert(alert)?;
+        // excel.get_sheets()?;
 
         Ok(excel)
     }
@@ -317,6 +329,10 @@ impl ExcelApplication {
         self.set_property("DisplayAlerts", alert)
     }
 
+    fn get_work_books(&self) -> Result<()> {
+        self.get_property("Workbooks")?;
+        Ok(())
+    }
     fn get_sheets(&self) -> Result<()> {
         self.get_property("Worksheets")?;
         Ok(())
