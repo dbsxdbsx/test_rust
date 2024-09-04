@@ -1,3 +1,4 @@
+//  powershell $excel = New-Object -ComObject Excel.Application $excel | Get-Member
 use std::{collections::HashMap, ptr};
 use windows::core::{BSTR, VARIANT};
 use windows::Win32::System::Com::{
